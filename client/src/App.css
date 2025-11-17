@@ -1,0 +1,41 @@
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+body {
+  height: 100vh;
+  width: 100%;
+
+}
+
+
+  .content {
+    height: 2000px; /* כדי להדגים גלילה */
+    padding: 50px;
+    color: #333;
+  }
+
+.my-masonry-grid {
+  display: flex;
+  margin-left: -16px;
+  /* מרווח שלילי כדי שהרווחים יתיישרו */
+  width: auto;
+  /* justify-content: center; */
+}
+
+.my-masonry-grid_column {
+  padding: 24px;
+  /* המרווח בין העמודות */
+  background-clip: padding-box;
+  border-right: 2px solid #ccc; /* הקו בין העמודות */
+  border-left: 1px solid #ccc; /* הקו בין העמודות */
+}
+
+/* כל כרטיס בתוך Masonry */
+.my-masonry-grid_column>div {
+  margin-bottom: 24px;
+  /* רווח בין הכרטיסים לאורך העמודה */
+}
