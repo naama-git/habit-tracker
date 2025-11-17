@@ -1,15 +1,17 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useHabitStore } from '../../../store/HabitStore'
+import { useParams } from 'react-router-dom'
 
-type OneHabitProps = {
-  _id: string
-}
 
-const OneHabit: React.FC<OneHabitProps> = ({ _id }) => {
 
-  const { getOneHabit, error, loading, habit } = useHabitStore()
+const OneHabit: React.FC = () => {
+
+  const { getOneHabit, error, habit } = useHabitStore()
+  const { _id } = useParams()
 
   const getHabit = () => {
+    if (!_id) return;
+
     getOneHabit(_id)
 
     if (error) {
@@ -20,7 +22,14 @@ const OneHabit: React.FC<OneHabitProps> = ({ _id }) => {
       console.log(habit);
     }
   }
-  
+
+
+  useEffect(() => {
+    getHabit()
+  }, [])
+
+
+
   return (
     <div>
 

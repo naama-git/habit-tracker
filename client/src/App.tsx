@@ -5,6 +5,7 @@ import Header from "./views/Header";
 import HomePage from "./views/HomePage";
 import './index.css'
 import MyHabitsView from "./views/MyHabitsView";
+import OneHabit from "./components/habits/OneHabit/OneHabit";
 
 function App() {
 
@@ -18,7 +19,7 @@ function App() {
           <Route path="">
             <Route path="/" element={<HomePage />} />
             <Route path="/myHabits" element={<MyHabitsView />} />
-            
+            <Route path="/myHabits/:_id" element={<OneHabit/>}/>
           </Route>
         </Routes>
       </Router>

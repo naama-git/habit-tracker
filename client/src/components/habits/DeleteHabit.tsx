@@ -13,17 +13,19 @@ import { useHabitStore } from '../../store/HabitStore';
 
 // ----- props -----
 type DeleteHabitProps = {
-    _id: string
+    _id: string | undefined
 }
 
 const DeleteHabit: React.FC<DeleteHabitProps> = ({ _id }) => {
 
     // ----- 🎨 state for notification
     const { contextHolder, openNotification } = useNotificationContext()
-    const {deleteHabit,error}=useHabitStore()
+    const { deleteHabit, error } = useHabitStore()
 
     // delete habit
     const deleteH = async () => {
+        if (!_id || _id === undefined) return;
+
         await deleteHabit(_id)
         openNotification("success", "habit deleted successfully")
         if (error) {
@@ -34,7 +36,7 @@ const DeleteHabit: React.FC<DeleteHabitProps> = ({ _id }) => {
 
     // confirm the deleting
     const confirm: PopconfirmProps['onConfirm'] = () => {
-        deleteH()  
+        deleteH()
     };
 
     return (
@@ -44,10 +46,10 @@ const DeleteHabit: React.FC<DeleteHabitProps> = ({ _id }) => {
                 title="Delete the task"
                 description="Are you sure to delete this task?"
                 onConfirm={confirm}
-               
+
                 okText="Yes"
                 cancelText="No">
-                <Button  icon={<DeleteOutlined />} style={{ backgroundColor: "white", border: "none", boxShadow: "none", fontSize: "20px" }}></Button>
+                <Button icon={<DeleteOutlined />} style={{ backgroundColor: "white", border: "none", boxShadow: "none", fontSize: "20px" }}></Button>
             </Popconfirm>
         </div>
     )

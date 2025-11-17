@@ -11,7 +11,7 @@ import { useHabitStore } from '../../../store/HabitStore'
 const MyHabits: React.FC = () => {
 
   // ----- state for user habits -----
-  const { habits, loading, error, getHabits } = useHabitStore();
+  const { habits,  error, getHabits } = useHabitStore();
   
 
   const getData = async () => {

@@ -10,8 +10,8 @@ import { Card, Tag, Typography, Space, Divider } from "antd";
 import { CalendarOutlined, ClockCircleOutlined } from "@ant-design/icons";
 import type { IHabit } from '../../../types/IHabit';
 import DeleteHabit from '../DeleteHabit';
-import { Navigate } from 'react-router-dom';
 const { Title, Text } = Typography;
+import { Link } from 'react-router-dom';
 
 // ----- props -----
 type GetHabitViewProps = {
@@ -20,12 +20,15 @@ type GetHabitViewProps = {
 
 const GetHabitsView: React.FC<GetHabitViewProps> = ({ habits }) => {
 
+
+
     // ----- breakpoints for responsive Masonry -----
     const breakpointColumnsObj = {
         default: 4,
         1200: 3,
         800: 2,
         600: 1
+
     };
 
     return (
@@ -50,9 +53,8 @@ const GetHabitsView: React.FC<GetHabitViewProps> = ({ habits }) => {
                     {habits.map((habit) => (
                         <div key={habit._id}>
 
-                            <a href={`/myHabits/${habit._id}`}>
 
-
+                            <Link to={`${habit._id}`} style={{ textDecoration: "none", color: "#3f4a5a" }}>
                                 <Card
                                     key={habit._id}
                                     // hoverable
@@ -76,6 +78,7 @@ const GetHabitsView: React.FC<GetHabitViewProps> = ({ habits }) => {
 
                                     {/* delete habit */}
                                     <div style={{ display: "flex", justifyContent: "flex-end" }}>
+
                                         <DeleteHabit _id={habit._id} />
                                     </div>
 
@@ -170,7 +173,8 @@ const GetHabitsView: React.FC<GetHabitViewProps> = ({ habits }) => {
                                         </div>
                                     )}
                                 </Card>
-                            </a>
+                            </Link>
+
                             <Divider style={{ backgroundColor: "#1a1a1a", height: "2" }}></Divider>
                         </div>
                     ))}
