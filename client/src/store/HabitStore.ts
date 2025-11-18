@@ -12,7 +12,7 @@ import type { IHabit } from "../types/IHabit";
 interface HabitState {
 
     habits: IHabit[]
-    habit: IHabit | null
+    habit: IHabit
 
     loading: boolean;
     error: string | null;
@@ -27,7 +27,7 @@ interface HabitState {
 export const useHabitStore = create<HabitState>((set: any) => ({
 
     habits: [],
-    habit: null,
+    habit: { habitName: '', frequency: -1, startDate: new Date(), time: "00:00" },
     loading: false,
     error: null,
 
@@ -67,13 +67,13 @@ export const useHabitStore = create<HabitState>((set: any) => ({
     },
 
     getOneHabit: async (_id: string) => {
-        
+
         set({ loading: true, error: null });
         try {
             const habit = await getOneHabit(_id);
             set((state: HabitState) => ({ habit: state.habit = habit, loading: false }));
             console.log(habit);
-            
+
         } catch (err: any) {
             set({ error: err.message || "Unknown error", loading: false });
         }

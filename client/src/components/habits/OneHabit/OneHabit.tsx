@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react'
 import { useHabitStore } from '../../../store/HabitStore'
 import { useParams } from 'react-router-dom'
+import OneHabitView from "./OneHabitView"
 
 
 
@@ -32,7 +33,7 @@ const OneHabit: React.FC = () => {
 
   return (
     <div>
-
+      <OneHabitView habit={habit}/>
     </div>
   )
 }
