@@ -57,3 +57,12 @@ export const getOneHabit = async (_id: string) => {
         throw new Error(error.response?.data?.message || "Failed to get a habit");
     }
 }
+
+export const updateHabit = async (_id: string) => {
+    try {
+        const res = await axios.patch(`${import.meta.env.VITE_API_URL}/myHabits/${_id}`);
+        return res.data;
+    } catch (error: any) {
+        throw new Error(error.response?.data?.message || "Failed to update a habit");
+    }
+}

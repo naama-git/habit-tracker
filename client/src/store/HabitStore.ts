@@ -4,7 +4,7 @@
 // store by zustand
 
 import { create } from "zustand";
-import { getHabits, addHabit, deleteHabit, getOneHabit } from "../services/habitService";
+import { getHabits, addHabit, deleteHabit, getOneHabit, updateHabit } from "../services/habitService";
 import type { IHabit } from "../types/IHabit";
 
 // store type
@@ -21,6 +21,7 @@ interface HabitState {
     addHabit: (habit: IHabit, token: string) => Promise<void>;
     deleteHabit: (_id: string) => Promise<void>;
     getOneHabit: (_id: string) => Promise<void>;
+    updateHabit: (_id: string) => Promise<void>;
 }
 
 
@@ -76,6 +77,18 @@ export const useHabitStore = create<HabitState>((set: any) => ({
 
         } catch (err: any) {
             set({ error: err.message || "Unknown error", loading: false });
+        }
+    },
+
+    updateHabit: async (_id: string) => {
+        set({ loading: true, error: null });
+
+        try {
+            const habit = await updateHabit(_id)
+            set((state: HabitState) => ({ habit: state.habit = habit, loading: false }));
+            console.log(habit);
+        } catch (error: any) {
+            set({ error: error.message || "Unknown error", loading: false });
         }
     }
 

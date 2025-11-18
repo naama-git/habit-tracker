@@ -42,7 +42,7 @@ const createHabit = async (req: Request, res: Response) => {
     }
     const { habitName, description, tag, frequency, startDate, endDate, time } = req.body
     // console.log("tags:",tag);
-    
+
 
     let sendStartDate: Date = startDate;
     if (sendStartDate === undefined) {
@@ -106,6 +106,22 @@ const updateHabit = async (req: Request, res: Response) => {
     return res.status(200).json(updatedHabit)
 }
 
+const updatePartialHabit = async (req: Request, res: Response) => {
+    const { _id } = req.params
+    const updates = req.body;
+    if (updates.length === 0) {
+        return res.status(400).send({ message: "Body cannot be empty for PATCH request." });
+    }
+
+    const updatedHabit = await Habit.findByIdAndUpdate(_id, { $set: updates }, { new: true })
+
+    if (!updatedHabit) {
+        return res.status(500).json({ message: "Failed to update habit" })
+    }
+    return res.status(200).json(updatedHabit)
+
+}
+
 
 //mark habit as done
 const habitDone = async (req: Request, res: Response) => {
@@ -120,4 +136,5 @@ const habitDone = async (req: Request, res: Response) => {
     }
     return res.status(201).json(habitLog)
 }
-export default { getHabits, getHabitById, createHabit, deleteHabit, updateHabit, habitDone }
+export default { getHabits, getHabitById, createHabit, deleteHabit, updateHabit, habitDone, updatePartialHabit }
+
