@@ -9,6 +9,7 @@ import { Modal, Form, Input, InputNumber, DatePicker, TimePicker, Divider } from
 import { formFields, type FormField } from './Fields/fieldsForAddHabit';
 import AddHabit_SelectTag from './AddHabit_SelectTag';
 import type { IHabit } from '../../../types/IHabit';
+import { Variants } from 'antd/es/config-provider';
 
 interface AddHabitViewProps {
   open: boolean | undefined
@@ -41,8 +42,9 @@ const AddHabitView: React.FC<AddHabitViewProps> = ({ handleChange, changeDates, 
         return <DatePicker.RangePicker
           placeholder={['Start Date', 'End Date']}
           allowEmpty={[false, true]}
+          
           onChange={(date, dateString) => {
-
+            
             if (date) {
               const a = date[0]?.toDate()
               const b = date[1]?.toDate()
@@ -59,7 +61,7 @@ const AddHabitView: React.FC<AddHabitViewProps> = ({ handleChange, changeDates, 
         return <TimePicker format={format} style={{ width: "100%" }} placeholder='HH:MM' showNow={true} size='large'
           onChange={(e) => handleChange('time', e.format("HH:mm"))} />;
       case "select":
-        return <AddHabit_SelectTag />
+        return <AddHabit_SelectTag variant='outlined'/>
       default:
         return <Input size='large' />;
     }

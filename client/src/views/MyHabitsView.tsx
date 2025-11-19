@@ -11,7 +11,7 @@ import { HabitProvider } from '../context/HabitContext'
 const MyHabitsView: React.FC = () => {
   return (
     <div style={{ padding: '40px' }}>
-      <HabitProvider> <AddHabit /> </HabitProvider>
+      <AddHabit /> 
       <MyHabits/>
     </div>
   )

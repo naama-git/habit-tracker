@@ -60,7 +60,7 @@ const OneHabitView: React.FC<OneHabitViewProps> = ({ habit }) => {
                                 onMouseEnter={(e) => (e.currentTarget.style.opacity = '1')}
                                 onMouseLeave={(e) => (e.currentTarget.style.opacity = '0.8')}
                             />
-                            <Title className="habit-title">{habitName}</Title>
+                            <Title className="habit-title" level={1}>{habitName}</Title>
 
                             {description && (
                                 <Text className="habit-description">{description}</Text>

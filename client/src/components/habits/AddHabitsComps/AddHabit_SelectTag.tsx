@@ -3,18 +3,21 @@
  🧩 Component :AddHabit_SelectTags
  📃 Description : Open a select box for selecting tags for habits. enables multiple choice.
 ------------------------------------------------------------------------------*/
-import React, {  useRef, useState,useEffect } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { PlusOutlined } from '@ant-design/icons';
 import { Button, Divider, Input, Select, Space, Tag } from 'antd';
 import type { InputRef, SelectProps } from 'antd';
 import { useHabitContext } from '../../../context/HabitContext'
 
+interface AddHabit_SelectTagProps {
+    variant: "underlined" | "outlined"
+}
 
 
-const AddHabit_SelectTag: React.FC = () => {
+const AddHabit_SelectTag: React.FC<AddHabit_SelectTagProps> = ({variant}) => {
 
     //----- 🎨array of tags for presenting and adding -----
-    const { items, setItems,userTags,setUserTags } = useHabitContext()
+    const { items, setItems, userTags, setUserTags } = useHabitContext()
 
     // ----- 🎨custume name ------
     const [name, setName] = useState('');
@@ -67,14 +70,14 @@ const AddHabit_SelectTag: React.FC = () => {
         if (!items.find((item: { value: string }) => item.value === name)) {
             setItems([...items, newItem]);
             console.log("tags:", items);
-            
+
 
         }
 
         //  מוסיפים את התגית למערך הנבחרים
         setSelectedTags([...selectedTags, name]);
-        setUserTags([...userTags,name])
-        
+        setUserTags([...userTags, name])
+
         // איפוס input
         setName('');
         setDisable(true);
@@ -83,10 +86,10 @@ const AddHabit_SelectTag: React.FC = () => {
             inputRef.current?.focus();
         }, 0);
     };
-    useEffect(()=>{
+    useEffect(() => {
         console.log("userTags:", userTags);
-        
-    },[userTags])
+
+    }, [userTags])
 
     return (
 
@@ -97,8 +100,9 @@ const AddHabit_SelectTag: React.FC = () => {
                 mode='multiple'
                 tagRender={tagRender}
                 value={selectedTags}
-                onChange={(vals) =>{ setSelectedTags(vals); setUserTags(vals)}}
+                onChange={(vals) => { setSelectedTags(vals); setUserTags(vals) }}
                 size='large'
+                variant={variant}
                 popupRender={(menu) => (
                     <>
                         {menu}

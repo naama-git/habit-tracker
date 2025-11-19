@@ -1,3 +1,7 @@
+
+
+
+
 .container {
     width: 100%;
     /* height: 100%; */
@@ -37,12 +41,12 @@
 }
 
 /* כותרת */
-.habit-title {
-    /* font-size: 1.1rem; */
+/* .habit-title {
+    font-size: 1.1rem;
     font-weight: bold;
     margin-bottom: 10px;
 
-}
+} */
 
 /* תיאור */
 .habit-description {
@@ -111,4 +115,77 @@
         font-size: 0.7rem;
         padding: 3px 8px;
     }
+}
+
+
+/* --- תוספות עבור מצב עריכה (UpdateHabit) --- */
+
+/* התאמת כותרת שהיא Input */
+.habit-title-input {
+    font-size: 1.1rem !important; /* תואם לכותרת המקורית */
+    font-weight: bold !important;
+    margin-bottom: 10px;
+    padding: 0 !important; /* ביטול ריפוד כדי ליישר לימין/שמאל כמו טקסט */
+    width: 90%; /* משאיר מקום לאייקון בצד */
+}
+
+.habit-title-input:focus,
+.habit-description-input:focus {
+    box-shadow: none !important;
+    background-color: #fcfcfc; /* רקע עדין מאוד בפוקוס */
+}
+
+/* התאמת תיאור שהוא TextArea */
+.habit-description-input {
+    font-size: 0.95rem !important;
+    color: #555;
+    margin-bottom: 16px;
+    padding: 0 !important;
+    resize: none;
+}
+
+/* יישור שדות ה-DatePicker וה-InputNumber בתוך השורות */
+.edit-row .ant-picker,
+.edit-row .ant-input-number {
+    padding: 0 !important;
+    box-shadow: none !important;
+}
+
+.edit-row .ant-picker-input > input,
+.edit-row .ant-input-number-input {
+    font-weight: bold;
+    text-align: right; /* או left תלוי בשפה */
+    color: #320988; /* צבע מודגש כמו בטקסט המקורי */
+}
+
+/* מצב עריכה כללי */
+.editing-mode {
+    border: 1px dashed #320988; /* אופציונלי: מסגרת מקווקווית עדינה שמראה שזה מצב עריכה */
+}
+
+
+/* --- עיצוב ה-Input של הכותרת --- */
+.habit-title-input {
+    font-size: 38px !important; /* גודל תואם ל-Title level 1 (לרוב 32-38px) */
+    font-weight: 600 !important; /* עובי הפונט של כותרת */
+    line-height: 1.23 !important; /* גובה שורה תואם כותרת */
+    text-align: center !important; /* יישור למרכז כמו בתמונה שלך */
+    color: rgba(0, 0, 0, 0.88) !important; /* צבע שחור-כותרת של Ant Design */
+    
+    margin-bottom: 0.5em; /* רווח תחתון זהה לכותרת */
+    padding: 0 !important; /* ביטול הריפוד הפנימי של ה-Input */
+    background: transparent !important; /* וידוא שהרקע שקוף */
+    height: auto !important; /* נותן ל-Input לגדול בהתאם לפונט */
+}
+
+/* שינוי צבע ה-Placeholder שיראה קצת יותר עדין אם הטקסט ריק */
+.habit-title-input::placeholder {
+    color: #bfbfbf;
+    font-weight: 400;
+    font-size:38px;
+}
+
+/* וידוא שאין מסגרת כחולה בפוקוס שמשנה את הגודל */
+.habit-title-input:focus {
+    box-shadow: none !important;
 }
