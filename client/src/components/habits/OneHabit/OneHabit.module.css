@@ -1,0 +1,228 @@
+.container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.card-wrapper {
+    width: 100%;
+    max-width: 500px;
+    margin-top: 50px;
+    background: white;
+    border-left: 1px #555 solid;
+    border-right: 1px #555 solid;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.habit-card {
+    width: 100%;
+    max-width: 420px;
+    background: #ffffff;
+    border-radius: 18px;
+    border: 1px black solid;
+    padding: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.in{
+    display: flex;
+    flex-direction: column;
+    /* justify-content: center;
+    align-items: center; */
+    
+}
+
+.habit-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.12);
+}
+
+
+.edit-icon {
+    position: "absolute";
+    top: 30;
+    right: 30;
+    font-size: 24 !important;
+    color: "#320988";
+    cursor: "pointer";
+    opacity: 0.8;
+    transition: "opacity 0.15s ease"
+}
+
+.edit-icon:hover {
+    opacity: '1'
+}
+
+.h1 {
+    font-size: 40px;
+    font-weight: bold;
+    padding: 0;
+    text-align: center;
+    margin: 0;
+
+}
+
+.habit-title{
+    margin-bottom: 0%;
+    
+    padding: 0;
+}
+
+.habit-description {
+    font-size: 0.95rem;
+    background-color: rgba(179, 176, 176, 0.119);
+    margin: 8px;
+    padding: 5px;
+    border-radius: 15px;
+    
+}
+
+
+.habit-tags {
+    display: flex;  
+    gap: 5px;
+    height: auto;
+    padding: 5px;
+}
+
+.habit-tag {
+
+    background-color: white;
+    color: #daeb28 ;
+    font-size: 0.75rem;
+    padding: 2px 10px;
+    border-radius: 5px;
+
+}
+
+
+.habit-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    font-size: 0.9rem;
+}
+
+.parameters {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    background: white;
+    border-radius: 10px;
+    padding: 14px;
+    border: 1px solid #e0e0e0;
+    margin-top: 10px
+
+}
+
+
+.habit-divider {
+    height: 1px;
+    background: #eaeaea;
+    margin: 14px 0;
+}
+
+
+@media (max-width: 480px) {
+    .habit-card {
+        padding: 16px;
+    }
+
+    .habit-title {
+        font-size: 1.35rem;
+    }
+
+    .habit-tag {
+        font-size: 0.7rem;
+        padding: 3px 8px;
+    }
+}
+
+
+/* --- תוספות עבור מצב עריכה (UpdateHabit) --- */
+
+/* התאמת כותרת שהיא Input */
+/* .habit-title-input {
+    font-size: 1.1rem !important; 
+    font-weight: bold !important;
+    margin-bottom: 10px;
+    padding: 0 !important; 
+    width: 90%;
+} */
+/* 
+.habit-title-input:focus,
+.habit-description-input:focus {
+    box-shadow: none !important;
+    background-color: #fcfcfc;
+   
+}
+
+
+.habit-description-input {
+    font-size: 0.95rem !important;
+    color: #555;
+    margin-bottom: 16px;
+    padding: 0 !important;
+    resize: none;
+}
+
+.edit-row .ant-picker,
+.edit-row .ant-input-number {
+    padding: 0 !important;
+    box-shadow: none !important;
+}
+
+.edit-row .ant-picker-input>input,
+.edit-row .ant-input-number-input {
+    font-weight: bold;
+    text-align: right;
+   
+    color: #320988;
+  
+}
+
+.editing-mode {
+    border: 1px dashed #320988;
+
+}
+
+
+
+.habit-title-input {
+    font-size: 38px !important;
+    
+    font-weight: 600 !important;
+    
+    line-height: 1.23 !important;
+ 
+    text-align: center !important;
+    
+    color: rgba(0, 0, 0, 0.88) !important;
+   
+
+    margin-bottom: 0.5em;
+   
+    padding: 0 !important;
+
+    background: transparent !important;
+
+    height: auto !important;
+
+}
+
+
+.habit-title-input::placeholder {
+    color: #bfbfbf;
+    font-weight: 400;
+    font-size: 38px;
+}
+
+
+.habit-title-input:focus {
+    box-shadow: none !important;
+} */

@@ -1,9 +1,8 @@
-import React, { useState } from 'react'
-import { useHabitStore } from '../../../store/HabitStore'
+import React from 'react'
 import UpdateHabitView from './UpdateHabitView'
-import { Button, Space } from 'antd'
+import {  Space } from 'antd'
 import { CheckOutlined, CloseOutlined } from '@ant-design/icons'
-
+import styles from './UpdateHabit.module.css'
 
 interface UpdateHabitProps {
   onEditMode: boolean,
@@ -12,15 +11,11 @@ interface UpdateHabitProps {
 }
 
 const UpdateHabit: React.FC<UpdateHabitProps> = ({ onEditMode, setOnEditMode }) => {
-  const { habit } = useHabitStore()
-
-
-
   return (
     <>
       {
         onEditMode &&
-        <div>
+        <div >
 
           <Space style={{ width: '100%', justifyContent: 'flex-end' }}>
             <CloseOutlined

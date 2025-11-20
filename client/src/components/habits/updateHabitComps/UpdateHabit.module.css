@@ -1,0 +1,70 @@
+
+.in{
+    display: flex;
+    flex-direction: column;
+    /* justify-content: center; */
+    align-items: center;
+    
+}
+
+
+.input-habit-name {
+    font-size: 40px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 3px;
+}
+
+.input-description {
+
+    font-size: 0.95rem;
+    width: 100%;
+    padding: 5px;
+    border-radius: 15px;
+}
+.input-description textarea {
+     color: rgba(0, 0, 0, 0.88) !important;
+}
+
+
+.habit-tags {
+   padding: 5px;
+}
+.habit-row {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom:8px;
+    font-size: 0.9rem;
+
+}
+
+.parameters {
+    display: flex;
+    flex-direction: column;
+    /* gap: 5px; */
+    background: white;
+    border-radius: 10px;
+    padding: 14px;
+    border: 1px solid #e0e0e0;
+    margin-top: 10px;
+}
+
+.habit-divider {
+    height: 1px;
+    background: #eaeaea;
+    margin: 14px 0;
+}
+
+
+@media (max-width: 480px) {
+
+    .input-habit-name {
+        font-size: 1.35rem;
+    }
+
+    .habit-tag {
+        font-size: 0.7rem;
+        padding: 3px 8px;
+    }
+}

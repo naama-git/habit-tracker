@@ -1,26 +1,31 @@
+
+/*----------------------------------------------------------------------------
+ 🧩 Component : One Habit View
+ 📃 Description : view for one habit
+------------------------------------------------------------------------------*/
+
 import React, { useState } from "react";
-import { Card, Typography,  Tag, Divider } from "antd";
+import { Card, Typography, Tag, Divider } from "antd";
 import { EditOutlined } from "@ant-design/icons";
 import type { IHabit } from "../../../types/IHabit";
-import "./OneHabit.css";
+import styles from './OneHabit.module.css'
 import UpdateHabit from "../updateHabitComps/UpdateHabit";
+import { useHabitStore } from "../../../store/HabitStore";
+
+const { Text } = Typography;
+
+// ----- props -----
+// interface OneHabitViewProps {
+//     habit: IHabit;
+// }
 
 
-const { Title, Text } = Typography;
+const OneHabitView: React.FC = () => {
 
-interface OneHabitViewProps {
-    habit: IHabit;
-}
-
-// const COLORS = {
-//     primary: "#daeb28",
-//     icon: "#320988",
-//     text: "black",
-// };
-
-const OneHabitView: React.FC<OneHabitViewProps> = ({ habit }) => {
-
+    // boolean state for edit mode
     const [onEditMode, setOnEditMode] = useState(false)
+
+    const { habit } = useHabitStore();
     const {
         habitName,
         description,
@@ -29,7 +34,8 @@ const OneHabitView: React.FC<OneHabitViewProps> = ({ habit }) => {
         startDate,
         endDate,
         time,
-    } = habit;
+    } = habit
+
 
     const formatDate = (date: Date | string | null | undefined) => {
         if (!date) return "";
@@ -38,63 +44,76 @@ const OneHabitView: React.FC<OneHabitViewProps> = ({ habit }) => {
 
     return (
 
-        <div className="container">
-            
-            <div className="card-wrapper">
+        <div className={styles['container']}>
 
-                <Card className="habit-card">
+            <div className={styles['card-wrapper']}>
+
+                <Card className={styles['habit-card']}>
                     {!onEditMode &&
-                        <div>
+                        <div  className={styles['in']}>
+
+                            {/* edit icon */}
                             <EditOutlined
                                 onClick={() => setOnEditMode(true)}
                                 style={{
                                     position: "absolute",
                                     top: 30,
                                     right: 30,
-                                    fontSize: 24,
+                                    fontSize: '24px',
                                     color: "#320988",
                                     cursor: "pointer",
                                     opacity: 0.8,
                                     transition: "opacity 0.15s ease"
                                 }}
-                                onMouseEnter={(e) => (e.currentTarget.style.opacity = '1')}
-                                onMouseLeave={(e) => (e.currentTarget.style.opacity = '0.8')}
-                            />
-                            <Title className="habit-title" level={1}>{habitName}</Title>
 
+                            />
+
+                            {/* habit name */}
+                            <h1 className={styles['habit-title']} style={{fontSize:"40px"}} >{habitName}</h1>
+
+                            {/* habit description */}
                             {description && (
-                                <Text className="habit-description">{description}</Text>
+                                <div className={styles['habit-description']}>
+                                    <Text >{description}</Text>
+                                </div>
                             )}
 
+                            {/* habit tags */}
 
                             {tag?.length > 0 && (
-                                <div className="habit-tags" >
+                                <div className={styles['habit-tags']} >
                                     {tag.map((t, i) => (
-                                        <Tag key={i} className="habit-tag" style={{ backgroundColor: "#daeb28" }}>{t}</Tag>
+                                        <Tag key={i} className={styles['habit-tag']} >{t}</Tag>
                                     ))}
                                 </div>
                             )}
 
-                            <Divider className="habit-divider"></Divider>
+                            <Divider className={styles['habit-divider']}></Divider>
 
-                            <div className="parameters" >
-                                <div className="habit-row">
+
+                            <div className={styles['parameters']} >
+
+                                {/* habit frequency */}
+                                <div className={styles['habit-row']}>
                                     <span>Frequency:</span>
                                     <strong>{frequency} / week</strong>
                                 </div>
 
-                                <div className="habit-row">
+                                {/* habit time */}
+                                <div className={styles['habit-row']}>
                                     <span>Time:</span>
                                     <strong>{time}</strong>
                                 </div>
 
-                                <div className="habit-row">
+                                {/* habit start date */}
+                                <div className={styles['habit-row']}>
                                     <span>Start:</span>
                                     <strong>{formatDate(startDate)}</strong>
                                 </div>
 
+                                {/* habit end-date */}
                                 {endDate && (
-                                    <div className="habit-row">
+                                    <div className={styles['habit-row']}>
                                         <span>End:</span>
                                         <strong>{formatDate(endDate)}</strong>
                                     </div>
@@ -103,7 +122,8 @@ const OneHabitView: React.FC<OneHabitViewProps> = ({ habit }) => {
                         </div>
                     }
                     {
-                        onEditMode && <UpdateHabit onEditMode={onEditMode} setOnEditMode={()=>setOnEditMode(false)}/>
+                        // edit mode
+                        onEditMode && <UpdateHabit onEditMode={onEditMode} setOnEditMode={() => setOnEditMode(false)} />
                     }
 
                 </Card>

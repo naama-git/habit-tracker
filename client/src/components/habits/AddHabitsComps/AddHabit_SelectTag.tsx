@@ -10,7 +10,7 @@ import type { InputRef, SelectProps } from 'antd';
 import { useHabitContext } from '../../../context/HabitContext'
 
 interface AddHabit_SelectTagProps {
-    variant: "underlined" | "outlined"
+    variant: "underlined" | "outlined"|"borderless" |"filled"
 }
 
 

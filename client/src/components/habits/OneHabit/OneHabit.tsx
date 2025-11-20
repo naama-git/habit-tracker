@@ -33,7 +33,7 @@ const OneHabit: React.FC = () => {
 
   return (
     <div>
-      <OneHabitView habit={habit}/>
+      <OneHabitView />
     </div>
   )
 }

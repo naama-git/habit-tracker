@@ -4,12 +4,10 @@
  📃 Description : View for add habit form
 ------------------------------------------------------------------------------*/
 
-// import React, { useState } from 'react';
 import { Modal, Form, Input, InputNumber, DatePicker, TimePicker, Divider } from 'antd';
 import { formFields, type FormField } from './Fields/fieldsForAddHabit';
 import AddHabit_SelectTag from './AddHabit_SelectTag';
 import type { IHabit } from '../../../types/IHabit';
-import { Variants } from 'antd/es/config-provider';
 
 interface AddHabitViewProps {
   open: boolean | undefined
