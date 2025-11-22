@@ -12,6 +12,7 @@ import type { IHabit } from '../../../types/IHabit';
 import DeleteHabit from '../DeleteHabit';
 const { Title, Text } = Typography;
 import { Link } from 'react-router-dom';
+import styles from './GetHabit.module.css';
 
 // ----- props -----
 type GetHabitViewProps = {
@@ -19,7 +20,6 @@ type GetHabitViewProps = {
 };
 
 const GetHabitsView: React.FC<GetHabitViewProps> = ({ habits }) => {
-
 
 
     // ----- breakpoints for responsive Masonry -----
@@ -32,16 +32,8 @@ const GetHabitsView: React.FC<GetHabitViewProps> = ({ habits }) => {
     };
 
     return (
-        <div style={{
-            marginTop: "50px", display: "flex", justifyContent: "center",
-        }}>
-            <div
-                style={{
-                    width: "100%",
-                    maxWidth: "1100px",
-                    padding: "0 20px"
-                }}
-            >
+        <div className={styles.wrapper}>
+            <div className={styles['container']} >
 
                 <Masonry
                     breakpointCols={breakpointColumnsObj}
@@ -52,49 +44,22 @@ const GetHabitsView: React.FC<GetHabitViewProps> = ({ habits }) => {
 
                     {habits.map((habit) => (
                         <div key={habit._id}>
-
-
                             <Link to={`${habit._id}`} style={{ textDecoration: "none", color: "#3f4a5a" }}>
                                 <Card
                                     key={habit._id}
-                                    // hoverable
-                                    style={{
-                                        backgroundColor: "white",
-                                        borderRadius: 16,
-                                        border: "1px solid black",
-                                        transition: "all 0.3s ease",
-                                        width: "100%"
-                                    }}
-                                    onMouseEnter={(e) => {
-                                        (e.currentTarget.style.transform = "translateY(-4px)");
-                                        // (e.currentTarget.style.boxShadow = "0 10px 20px rgba(0,0,0,0.12)");
-                                    }}
-                                    onMouseLeave={(e) => {
-                                        (e.currentTarget.style.transform = "translateY(0)");
-                                        // (e.currentTarget.style.boxShadow = "0 6px 12px rgba(0,0,0,0.06)");
-                                    }}
-
+                                    className={styles['card']}
                                 >
 
                                     {/* delete habit */}
-                                    <div style={{ display: "flex", justifyContent: "flex-end" }}>
-
+                                    <div className={styles['delete-div']}>
                                         <DeleteHabit _id={habit._id} />
                                     </div>
 
 
                                     {/* name of habit */}
                                     <Title
-                                        level={4}
-                                        style={{
-
-                                            color: "#2d006b",
-                                            fontSize: 20,
-                                            marginBottom: 6,
-                                            marginTop: "0px",
-                                            textAlign: "center",
-
-                                        }}
+                                        level={3}
+                                        className={styles['title']}
                                     >
                                         {habit.habitName}
                                     </Title>
@@ -104,16 +69,9 @@ const GetHabitsView: React.FC<GetHabitViewProps> = ({ habits }) => {
                                         <Text
                                             type="secondary"
                                             style={{
-                                                display: "-webkit-box",
-                                                WebkitLineClamp: 3,
-                                                WebkitBoxOrient: "vertical",
-                                                overflow: "hidden",
-                                                textOverflow: "ellipsis",
-                                                fontSize: 13,
                                                 color: "#5f5f5f",
-                                                textAlign: "center",
-                                                marginBottom: 10,
                                             }}
+                                            className={styles['text']}
                                         >
                                             {habit.description}
                                         </Text>
@@ -144,13 +102,6 @@ const GetHabitsView: React.FC<GetHabitViewProps> = ({ habits }) => {
                                                 {habit.time}
                                             </Text>
                                         </Space>
-
-                                        {/* <Space size={8}>
-                                <TagOutlined style={{ color: "#7b2ff7" }} />
-                                <Text style={{ fontSize: 13, color: "#333" }}>
-                                    {habit.frequency}× per week
-                                </Text>
-                            </Space> */}
                                     </Space>
 
                                     {/* tags of habit */}
@@ -162,12 +113,8 @@ const GetHabitsView: React.FC<GetHabitViewProps> = ({ habits }) => {
                                                     color="#daeb28"
                                                     style={{
                                                         color: "#1a1a1a",
-                                                        fontWeight: 500,
-                                                        borderRadius: 8,
-                                                        padding: "2px 10px",
-                                                        margin: "3px",
-                                                        fontSize: 12,
                                                     }}
+                                                    className={styles['tag']}
                                                 > {t}</Tag>
                                             ))}
                                         </div>

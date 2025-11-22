@@ -78,28 +78,7 @@ const AddHabit: React.FC = () => {
         setTimeout(() => {
             setOpen(false)
         }, 1000)
-        // try {
-        //     const res = await axios.post(`${import.meta.env.VITE_API_URL}/myHabits`, habit, {
-        //         headers: {
-        //             Authorization: "Bearer " + token
-        //         }
-        //     })
-        //     console.log("success!!:", res.data);
-        //     openNotification("success", `Your Habit ${habit.habitName}  Successfully Added`)
 
-        // } catch (error) {
-        //     console.log(error);
-        //     if (error instanceof AxiosError) {
-        //         //print all error messages from server
-        //         console.log(error.status);
-
-        //         // error.response?.data.errors.map((err: any) => openNotification("error", err.msg, err.path));
-        //         openNotification("error", error.status)
-
-        //     }
-
-        // }
-        // console.log(habitDraft);
 
 
     }

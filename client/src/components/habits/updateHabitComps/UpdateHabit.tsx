@@ -1,55 +1,66 @@
-import React from 'react'
+import React, { useState } from 'react'
 import UpdateHabitView from './UpdateHabitView'
-import {  Space } from 'antd'
+import { Button, Space } from 'antd'
 import { CheckOutlined, CloseOutlined } from '@ant-design/icons'
 import styles from './UpdateHabit.module.css'
+import { useHabitStore } from '../../../store/HabitStore'
+import type { IHabit } from '../../../types/IHabit'
+import { useParams } from 'react-router-dom'
 
 interface UpdateHabitProps {
   onEditMode: boolean,
   setOnEditMode: () => void
-
 }
 
+
+
 const UpdateHabit: React.FC<UpdateHabitProps> = ({ onEditMode, setOnEditMode }) => {
+
+  const { updateHabit, error } = useHabitStore()
+  const [updates, setUpdates] = useState<Partial<IHabit>>({})
+  const { _id } = useParams<string>()
+
+  const handleChange = (field: keyof (IHabit), value: any) => {
+    if (value && value != "")
+      setUpdates({ ...updates, [field]: value })
+  }
+
+  const check = () => {
+    console.log("checked");
+    sendData()
+
+  }
+
+  const sendData = () => {
+    if (!_id) return;
+    updateHabit(_id, updates)
+    if (error) {
+      console.log(error);
+
+    }
+
+  }
+
+
   return (
     <>
       {
         onEditMode &&
-        <div >
+        <div  >
 
-          <Space style={{ width: '100%', justifyContent: 'flex-end' }}>
+          <Space >
             <CloseOutlined
               onClick={() => setOnEditMode()}
-              style={{
-                position: "absolute",
-                top: 30,
-                right: 30,
-                fontSize: 24,
-                color: "#320988",
-                cursor: "pointer",
-                opacity: 0.8,
-                transition: "opacity 0.15s ease"
-              }}
-              onMouseEnter={(e) => (e.currentTarget.style.opacity = '1')}
-              onMouseLeave={(e) => (e.currentTarget.style.opacity = '0.8')}
-            />
-            <CheckOutlined
-
-              style={{
-                position: "absolute",
-                top: 30,
-                right: 60,
-                fontSize: 24,
-                color: "#320988",
-                cursor: "pointer",
-                opacity: 0.8,
-                transition: "opacity 0.15s ease"
-              }}
-              onMouseEnter={(e) => (e.currentTarget.style.opacity = '1')}
-              onMouseLeave={(e) => (e.currentTarget.style.opacity = '0.8')}
+              className={styles['cancel']}
             />
           </Space>
-          <UpdateHabitView />
+          <UpdateHabitView handleChange={handleChange} />
+          <Button
+            icon={<CheckOutlined />}
+            className={styles['save-button']}
+            onClick={() => check()}>
+            save
+          </Button>
         </div>
       }
     </>

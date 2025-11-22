@@ -50,7 +50,7 @@ const OneHabitView: React.FC = () => {
 
                 <Card className={styles['habit-card']}>
                     {!onEditMode &&
-                        <div  className={styles['in']}>
+                        <div className={styles['in']}>
 
                             {/* edit icon */}
                             <EditOutlined
@@ -69,7 +69,7 @@ const OneHabitView: React.FC = () => {
                             />
 
                             {/* habit name */}
-                            <h1 className={styles['habit-title']} style={{fontSize:"40px"}} >{habitName}</h1>
+                            <h1 className={styles['habit-title']} style={{ fontSize: "40px" }} >{habitName}</h1>
 
                             {/* habit description */}
                             {description && (
@@ -79,7 +79,7 @@ const OneHabitView: React.FC = () => {
                             )}
 
                             {/* habit tags */}
-
+                            <Divider style={{ borderColor: "#daeb28" }}> Tags </Divider>
                             {tag?.length > 0 && (
                                 <div className={styles['habit-tags']} >
                                     {tag.map((t, i) => (

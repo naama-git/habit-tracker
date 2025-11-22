@@ -5,19 +5,22 @@
 ------------------------------------------------------------------------------*/
 import React, { useRef, useState, useEffect } from 'react';
 import { PlusOutlined } from '@ant-design/icons';
-import { Button, Divider, Input, Select, Space, Tag } from 'antd';
+import { Button, Input, Select, Space, Tag } from 'antd';
 import type { InputRef, SelectProps } from 'antd';
 import { useHabitContext } from '../../../context/HabitContext'
+import { useHabitStore } from '../../../store/HabitStore';
 
 interface AddHabit_SelectTagProps {
-    variant: "underlined" | "outlined"|"borderless" |"filled"
+    variant: "underlined" | "outlined" | "borderless" | "filled"
 }
 
 
-const AddHabit_SelectTag: React.FC<AddHabit_SelectTagProps> = ({variant}) => {
+const AddHabit_SelectTag: React.FC<AddHabit_SelectTagProps> = ({ variant }) => {
 
     //----- 🎨array of tags for presenting and adding -----
     const { items, setItems, userTags, setUserTags } = useHabitContext()
+    const { habit } = useHabitStore()
+
 
     // ----- 🎨custume name ------
     const [name, setName] = useState('');
@@ -65,7 +68,7 @@ const AddHabit_SelectTag: React.FC<AddHabit_SelectTagProps> = ({variant}) => {
 
         if (!name.trim()) return;
 
-        //  מוסיפים את התגית למערך האפשרויות אם היא חדשה
+        //  Adding tag to the items if it is new
         const newItem = { value: name };
         if (!items.find((item: { value: string }) => item.value === name)) {
             setItems([...items, newItem]);
@@ -74,11 +77,10 @@ const AddHabit_SelectTag: React.FC<AddHabit_SelectTagProps> = ({variant}) => {
 
         }
 
-        //  מוסיפים את התגית למערך הנבחרים
+        //  Adding the tag to selected tags
         setSelectedTags([...selectedTags, name]);
         setUserTags([...userTags, name])
 
-        // איפוס input
         setName('');
         setDisable(true);
 
@@ -86,10 +88,15 @@ const AddHabit_SelectTag: React.FC<AddHabit_SelectTagProps> = ({variant}) => {
             inputRef.current?.focus();
         }, 0);
     };
-    useEffect(() => {
-        console.log("userTags:", userTags);
 
-    }, [userTags])
+    useEffect(() => {
+        // console.log("userTags", userTags);
+        // console.log("habitTags", habit.tag);
+        if (habit.tag) {
+            setSelectedTags([...selectedTags, ...habit.tag])
+        }
+    }, [])
+
 
     return (
 
@@ -106,7 +113,7 @@ const AddHabit_SelectTag: React.FC<AddHabit_SelectTagProps> = ({variant}) => {
                 popupRender={(menu) => (
                     <>
                         {menu}
-                        <Divider style={{ margin: '8px 0' }} />
+
                         <Space style={{ padding: '0 8px 4px' }}>
                             <Input
                                 placeholder="Custumize your tag"

@@ -8,6 +8,7 @@ import { Modal, Form, Input, InputNumber, DatePicker, TimePicker, Divider } from
 import { formFields, type FormField } from './Fields/fieldsForAddHabit';
 import AddHabit_SelectTag from './AddHabit_SelectTag';
 import type { IHabit } from '../../../types/IHabit';
+import styles from './AddHabit.module.css'
 
 interface AddHabitViewProps {
   open: boolean | undefined
@@ -66,21 +67,19 @@ const AddHabitView: React.FC<AddHabitViewProps> = ({ handleChange, changeDates, 
   };
 
   return (
-    <div style={{ textAlign: "center", margin: "30px 0", }}>
+    <div className={styles['wrapper']}>
       <Modal
         title={
           <div
-            style={{ fontSize: "1.4rem", fontWeight: "bold", textAlign: "center" }}
-          >
+            className={styles['title']} >
             Add a New Habit
-            
-          </div>
+            </div>
         }
+        className={styles['modal']}
         open={open}
         onCancel={onCancel}
         onOk={() => { form.resetFields(), clickOK() }}
         width="80%"
-        style={{ maxWidth: 550 }}
         centered
         okButtonProps={{
           style: { color: "black", borderRadius: "10px", fontWeight: "600", }
@@ -91,11 +90,7 @@ const AddHabitView: React.FC<AddHabitViewProps> = ({ handleChange, changeDates, 
         <Form
           form={form}
           layout="vertical"
-          style={{
-            // background: "#f3f2f2ff",
-            padding: "20px 30px",
-            borderRadius: "16px",
-          }}
+          className={styles['form']}
         >
           {/* --- General Info Section --- */}
           <Divider style={{ borderColor: "#daeb28" }}> General Info</Divider>
@@ -105,7 +100,6 @@ const AddHabitView: React.FC<AddHabitViewProps> = ({ handleChange, changeDates, 
               label={field.label}
               name={field.name}
               rules={[{ required: field.required, message: `${field.label} is required` }]}
-
             >
               {renderField(field)}
             </Form.Item>

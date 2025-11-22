@@ -5,6 +5,7 @@
 import axios from "axios";
 import type { IHabit } from "../types/IHabit";
 
+
 // get user habits from server
 export const getHabits = async (token: string) => {
     try {
@@ -58,9 +59,10 @@ export const getOneHabit = async (_id: string) => {
     }
 }
 
-export const updateHabit = async (_id: string) => {
+export const updateHabit = async (_id: string, updates:Partial<IHabit>) => {
     try {
-        const res = await axios.patch(`${import.meta.env.VITE_API_URL}/myHabits/${_id}`);
+        const res = await axios.patch(`${import.meta.env.VITE_API_URL}/myHabits/${_id}`,updates);
+        
         return res.data;
     } catch (error: any) {
         throw new Error(error.response?.data?.message || "Failed to update a habit");

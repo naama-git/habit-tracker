@@ -1,10 +1,9 @@
 
-.in{
+
+.in {
     display: flex;
     flex-direction: column;
-    /* justify-content: center; */
     align-items: center;
-    
 }
 
 
@@ -22,19 +21,21 @@
     padding: 5px;
     border-radius: 15px;
 }
+
 .input-description textarea {
-     color: rgba(0, 0, 0, 0.88) !important;
+    color: rgba(0, 0, 0, 0.88) !important;
 }
 
 
 .habit-tags {
-   padding: 5px;
+    padding: 5px;
 }
+
 .habit-row {
     align-items: center;
     display: flex;
     justify-content: space-between;
-    margin-bottom:8px;
+    margin-bottom: 8px;
     font-size: 0.9rem;
 
 }
@@ -67,4 +68,29 @@
         font-size: 0.7rem;
         padding: 3px 8px;
     }
+}
+
+/* update habit buttons */
+
+.cancel {
+    position: absolute;
+    top: 30px;
+    right: 30px;
+    font-size: 20px;
+    color: #320988;
+    cursor: pointer;
+    opacity: 0.8;
+    transition: opacity 0.15s ease
+}
+
+.save-button {
+    color: 320988;
+    background-color: white;
+    cursor: pointer;
+    margin-top: 15px;
+    border: 1px #320988 solid;
+}
+
+.save-button:hover {
+    background-color: white;
 }

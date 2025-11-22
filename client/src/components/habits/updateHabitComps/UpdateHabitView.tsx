@@ -9,12 +9,18 @@ import dayjs from "dayjs";
 import { useHabitStore } from "../../../store/HabitStore";
 import AddHabit_SelectTag from "../AddHabitsComps/AddHabit_SelectTag";
 import styles from './UpdateHabit.module.css'
+import type { IHabit } from "../../../types/IHabit";
 
 const { TextArea } = Input;
 
-const UpdateHabitView: React.FC = () => {
+interface UpdateHabitProps {
+    handleChange: (field: keyof (IHabit), value: any) => void
+}
+
+const UpdateHabitView: React.FC<UpdateHabitProps> = ({ handleChange }) => {
 
     const { habit } = useHabitStore()
+    
     const dateFormat = "YYYY-MM-DD";
     const timeFormat = "HH:mm";
     const [form, setForm] = useState({ ...habit })
@@ -24,8 +30,14 @@ const UpdateHabitView: React.FC = () => {
         if (inputRef.current) {
             inputRef.current.focus();
         }
+
     }, []);
-    
+   
+    const changeView=(field: keyof (IHabit), value: any)=>{
+        setForm({...form,[field]:value})
+        handleChange(field,value)
+
+    }
     return (
 
         <>
@@ -34,7 +46,7 @@ const UpdateHabitView: React.FC = () => {
                 <Input
                     className={styles['input-habit-name']}
                     value={form.habitName}
-                    onChange={(e) => setForm({ ...form, habitName: e.target.value })}
+                    onChange={(e) => changeView('habitName', e.target.value)}
                     variant="filled"
                     placeholder="Habit Name"
                     ref={inputRef}
@@ -45,7 +57,7 @@ const UpdateHabitView: React.FC = () => {
                 <div className={styles['input-description']}>
                     <TextArea
                         value={form.description}
-                        // onChange={(e) => setUpdatedHabit({ ...updatedHabit, description: e.target.value })}
+                        onChange={(e) => changeView('description', e.target.value)}
                         placeholder="Description..."
                         autoSize={{ minRows: 1, maxRows: 3 }}
                         style={{ textAlign: "center" }}
@@ -54,6 +66,7 @@ const UpdateHabitView: React.FC = () => {
                 </div>
 
             </div>
+            <Divider style={{ borderColor: "#daeb28" }}> Tags </Divider>
             {/* tags*/}
             <div className={styles['habit-tags']}>
                 <AddHabit_SelectTag variant="filled" />
@@ -73,8 +86,7 @@ const UpdateHabitView: React.FC = () => {
                             max={30}
                             variant="underlined"
                             value={form.frequency}
-
-                            // onChange={(val) => setUpdatedHabit({ ...updatedHabit, frequency: val || 0 })}
+                            onChange={(e) => changeView('frequency', e || 1)}
                             style={{ width: 30, textAlign: 'right', color: "#320988" }}
                         />
                         <strong>/ week</strong>
@@ -89,7 +101,7 @@ const UpdateHabitView: React.FC = () => {
                         format={timeFormat}
                         variant="underlined"
                         allowClear={false}
-                        // onChange={(_, timeString) => setUpdatedHabit({ ...updatedHabit, time: timeString as string })}
+                        onChange={(_, timeString) => changeView('time', timeString as string)}
                         style={{ width: 100, direction: 'rtl' }}
                     />
                 </div>
@@ -102,7 +114,7 @@ const UpdateHabitView: React.FC = () => {
                         format={dateFormat}
                         variant="underlined"
                         allowClear={false}
-                        // onChange={(date) => setUpdatedHabit({ ...updatedHabit, startDate: date?.toDate() || new Date() })}
+                        onChange={(date) => changeView('startDate', date?.toDate() || new Date())}
                         style={{ width: 120 }}
                     />
                 </div>
@@ -116,7 +128,7 @@ const UpdateHabitView: React.FC = () => {
                         format={dateFormat}
                         variant="underlined"
                         placeholder="No End Date"
-                        // onChange={(date) => setUpdatedHabit({ ...updatedHabit, endDate: date?.toDate() || undefined })}
+                        onChange={(date) => changeView('endDate', date?.toDate() || undefined)}
                         style={{ width: 120, }}
                     />
                 </div>
