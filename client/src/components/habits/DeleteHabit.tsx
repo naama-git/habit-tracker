@@ -4,7 +4,7 @@
  📃 Description : Deleting habit by ID
 ------------------------------------------------------------------------------*/
 
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Button, Popconfirm } from 'antd'
 import type { PopconfirmProps } from 'antd'
 import { DeleteOutlined } from '@ant-design/icons';
@@ -25,10 +25,11 @@ const DeleteHabit: React.FC<DeleteHabitProps> = ({ _id }) => {
     // delete habit
     const deleteH = async () => {
         if (!_id || _id === undefined) return;
-
-        await deleteHabit(_id)
-        openNotification("success", "habit deleted successfully")
-        if (error) {
+        try {
+            await deleteHabit(_id)
+            openNotification("success", "habit deleted successfully")
+        }
+        catch(err){
             console.log(error);
             openNotification()
         }
@@ -39,14 +40,18 @@ const DeleteHabit: React.FC<DeleteHabitProps> = ({ _id }) => {
         deleteH()
     };
 
+    useEffect(()=>{
+        console.log("on delete habit");
+        
+    },[])
+
     return (
         <div>
             {contextHolder}
             <Popconfirm
                 title="Delete the task"
-                description="Are you sure to delete this task?"
+                description="Are you sure you want to delete this task?"
                 onConfirm={confirm}
-
                 okText="Yes"
                 cancelText="No">
                 <Button icon={<DeleteOutlined />} style={{ backgroundColor: "white", border: "none", boxShadow: "none", fontSize: "20px" }}></Button>

@@ -5,7 +5,7 @@
 ------------------------------------------------------------------------------*/
 
 import { Button } from 'antd'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import AddHabitView from './AddHabitView'
 import type { IHabit } from '../../../types/IHabit'
 import { useHabitContext } from '../../../context/HabitContext'
@@ -23,6 +23,7 @@ const AddHabit: React.FC = () => {
     // ------ 🎨states for view ------
 
     const [open, setOpen] = useState<boolean | undefined>(false)
+    const [disabled,setDisabled]=useState<boolean>(true)
 
     const { openNotification, contextHolder } = useNotificationContext()
 
@@ -32,13 +33,12 @@ const AddHabit: React.FC = () => {
     }
 
     // ------- responsible for start date & end date
-    const changeDates = (value?: { a: Date, b: Date }) => {
+    const changeDates = (value?: { a?: Date, b?: Date }) => {
         console.log("value", value);
         if (!value) return
         if (value.a) {
             setHabitDraft((prev) => ({ ...prev, startDate: value.a }))
         }
-
         if (value.b)
             setHabitDraft((prev) => ({ ...prev, endDate: value.b }))
     }
@@ -79,13 +79,14 @@ const AddHabit: React.FC = () => {
             setOpen(false)
         }, 1000)
 
-
-
     }
 
-    // useEffect(() => {
-    //     console.log("habitDraft:", habitDraft);
-    // }, [habitDraft])
+    useEffect(() => {
+        // console.log("habitDraft:", habitDraft);
+        if(habitDraft.habitName&&habitDraft.time&&habitDraft.frequency){
+            setDisabled(false)
+        }
+    }, [habitDraft])
 
     const clickOK = () => {
         checkFieds()
@@ -109,6 +110,8 @@ const AddHabit: React.FC = () => {
                     handleChange={handleChange}
                     changeDates={changeDates}
                     clickOK={clickOK}
+                    disabled={disabled}
+                    
                 />
             }
 

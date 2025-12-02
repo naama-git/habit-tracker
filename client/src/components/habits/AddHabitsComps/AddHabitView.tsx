@@ -9,16 +9,18 @@ import { formFields, type FormField } from './Fields/fieldsForAddHabit';
 import AddHabit_SelectTag from './AddHabit_SelectTag';
 import type { IHabit } from '../../../types/IHabit';
 import styles from './AddHabit.module.css'
+// import { useEffect, useState } from 'react';
 
 interface AddHabitViewProps {
   open: boolean | undefined
   onCancel: () => void
   handleChange: (field: keyof (IHabit), value: any) => void
-  changeDates: (value?: { a: Date, b: Date }) => void
+  changeDates: (value?: { a?: Date, b?: Date }) => void
   clickOK: () => void
+  disabled: boolean
 }
 
-const AddHabitView: React.FC<AddHabitViewProps> = ({ handleChange, changeDates, clickOK, open, onCancel }) => {
+const AddHabitView: React.FC<AddHabitViewProps> = ({ handleChange, changeDates, clickOK, open, onCancel, disabled }) => {
 
   //------------------------ VIEW -----------------------------//
 
@@ -27,28 +29,25 @@ const AddHabitView: React.FC<AddHabitViewProps> = ({ handleChange, changeDates, 
   const [form] = Form.useForm();
   const format = 'HH:mm';
 
-
   // ------ 🧩 returns the fields with match data inputs
   const renderField = (field: FormField) => {
     switch (field.type) {
       case "text":
-        return <Input size='large' onChange={(e) => { handleChange('habitName', e.target.value) }} />;
+        return <Input size='large' onChange={(e) => { handleChange('habitName', e.target.value); }} />;
       case "textarea":
         return <Input.TextArea rows={3} onChange={(e) => { handleChange('description', e.target.value) }} />;
       case "number":
-        return <InputNumber style={{ width: "100%" }} min={1} max={30} size='large' onChange={(e) => { handleChange('frequency', e?.valueOf()) }} />;
+        return <InputNumber type="number" style={{ width: "100%" }} min={1} max={30} size='large' onChange={(e) => { handleChange('frequency', e?.valueOf()) }} />;
       case "date":
         return <DatePicker.RangePicker
           placeholder={['Start Date', 'End Date']}
           allowEmpty={[false, true]}
-          
-          onChange={(date, dateString) => {
-            
+
+          onChange={(date) => {
+
             if (date) {
               const a = date[0]?.toDate()
               const b = date[1]?.toDate()
-              // console.log({ a, b });
-
               changeDates({ a, b })
             }
 
@@ -57,14 +56,22 @@ const AddHabitView: React.FC<AddHabitViewProps> = ({ handleChange, changeDates, 
           size='large'
         />
       case "time":
-        return <TimePicker format={format} style={{ width: "100%" }} placeholder='HH:MM' showNow={true} size='large'
-          onChange={(e) => handleChange('time', e.format("HH:mm"))} />;
+        return <TimePicker type="number" format={format} style={{ width: "100%" }} placeholder='HH:MM' showNow={true} size='large'
+          onChange={(e) => { handleChange('time', e.format("HH:mm")) }} />;
       case "select":
-        return <AddHabit_SelectTag variant='outlined'/>
+        return <AddHabit_SelectTag variant='outlined' />
       default:
         return <Input size='large' />;
     }
   };
+
+  //
+    const onFinish = (values: any) => {
+    console.log(values);
+  };
+
+
+
 
   return (
     <div className={styles['wrapper']}>
@@ -73,16 +80,16 @@ const AddHabitView: React.FC<AddHabitViewProps> = ({ handleChange, changeDates, 
           <div
             className={styles['title']} >
             Add a New Habit
-            </div>
+          </div>
         }
         className={styles['modal']}
         open={open}
         onCancel={onCancel}
-        onOk={() => { form.resetFields(), clickOK() }}
-        width="80%"
+        onOk={() => { form.resetFields(); clickOK() }}
         centered
         okButtonProps={{
-          style: { color: "black", borderRadius: "10px", fontWeight: "600", }
+          style: { color: "black", borderRadius: "10px", fontWeight: "600" },
+          disabled: disabled
         }}
         cancelButtonProps={{ style: { display: "none" } }}
       >
@@ -131,6 +138,7 @@ const AddHabitView: React.FC<AddHabitViewProps> = ({ handleChange, changeDates, 
             </Form.Item>
           ))}
         </Form>
+
       </Modal>
     </div>
   )

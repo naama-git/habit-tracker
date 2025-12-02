@@ -4,7 +4,9 @@
 }
 
 .modal{
-    max-width: 550
+
+    max-width: 550;
+    width:80%;
 }
 
 .title {

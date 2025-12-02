@@ -44,18 +44,18 @@ const GetHabitsView: React.FC<GetHabitViewProps> = ({ habits }) => {
 
                     {habits.map((habit) => (
                         <div key={habit._id}>
-                            <Link to={`${habit._id}`} style={{ textDecoration: "none", color: "#3f4a5a" }}>
-                                <Card
-                                    key={habit._id}
-                                    className={styles['card']}
-                                >
 
-                                    {/* delete habit */}
-                                    <div className={styles['delete-div']}>
-                                        <DeleteHabit _id={habit._id} />
-                                    </div>
+                            <Card
+                                key={habit._id}
+                                className={styles['card']}
+                            >
 
-
+                                {/* delete habit */}
+                                <div className={styles['delete-div']}>
+                                    <DeleteHabit _id={habit._id} />
+                                </div>
+                                {/* link to get one habit by _id */}
+                                <Link to={`${habit._id}`} style={{ textDecoration: "none", color: "#3f4a5a" }}>
                                     {/* name of habit */}
                                     <Title
                                         level={3}
@@ -119,8 +119,10 @@ const GetHabitsView: React.FC<GetHabitViewProps> = ({ habits }) => {
                                             ))}
                                         </div>
                                     )}
-                                </Card>
-                            </Link>
+                                </Link>
+
+                            </Card>
+
 
                             <Divider style={{ backgroundColor: "#1a1a1a", height: "2" }}></Divider>
                         </div>

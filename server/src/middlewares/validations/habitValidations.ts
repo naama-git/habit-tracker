@@ -23,7 +23,7 @@ export const habitValidation = [
 // for updating
 export const partialHabitVaildation = [
   body('frequency').optional({ nullable: true }).isInt({ min: 1 }).withMessage('Frequency must be at least 1 '),
-  body('time').matches(/^([01]\d|2[0-3]):([0-5]\d)$/).withMessage('Time must be in HH:mm format'),
+  body('time').optional().matches(/^([01]\d|2[0-3]):([0-5]\d)$/).withMessage('Time must be in HH:mm format'),
   body('startDate').optional({ nullable: true }).isISO8601().withMessage('Start date must be a valid date'),
   body('startDate').optional({ nullable: true }).isISO8601().withMessage('Start date must be a valid ISO 8601 date format').toDate(),
   body('endDate').optional({ nullable: true }).isISO8601().withMessage('End date must be a valid ISO 8601 date format').toDate(),

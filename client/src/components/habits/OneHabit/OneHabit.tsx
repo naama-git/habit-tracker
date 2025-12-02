@@ -7,7 +7,7 @@ import OneHabitView from "./OneHabitView"
 
 const OneHabit: React.FC = () => {
 
-  const { getOneHabit, error, habit } = useHabitStore()
+  const { getOneHabit, error, loading } = useHabitStore()
   const { _id } = useParams()
 
   const getHabit = () => {
@@ -19,12 +19,12 @@ const OneHabit: React.FC = () => {
       console.log(error);
 
     }
-    else {
-      console.log(habit);
+    else if (loading) {
+      console.log("Loading...");
     }
+   
   }
-
-
+  
   useEffect(() => {
     getHabit()
   }, [])

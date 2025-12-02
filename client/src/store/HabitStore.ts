@@ -28,7 +28,7 @@ interface HabitState {
 export const useHabitStore = create<HabitState>((set: any) => ({
 
     habits: [],
-    habit: { habitName: '', frequency: -1, startDate: new Date(), time: "00:00" },
+    habit: {} as IHabit,
     loading: false,
     error: null,
 
@@ -67,13 +67,14 @@ export const useHabitStore = create<HabitState>((set: any) => ({
         }
     },
 
+    // --- get one habit
     getOneHabit: async (_id: string) => {
 
         set({ loading: true, error: null });
         try {
             const habit = await getOneHabit(_id);
             set((state: HabitState) => ({ habit: state.habit = habit, loading: false }));
-            console.log(habit);
+            console.log("habitstore", habit);
 
         } catch (err: any) {
             set({ error: err.message || "Unknown error", loading: false });

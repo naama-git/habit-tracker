@@ -13,7 +13,6 @@ export const formFields: FormField[] = [
     { name: "name", label: "Name", type: "text", required: true },
     { name: "description", label: "Description", type: "textarea" },
     { name: "dates", label: "Start date & End Date", type: "date" },
-    // { name: "endDate", label: "End date", type: "date" },
     { name: "hour", label: "Hour", type: "time", required: true },
     { name: "freq", label: "Frequency", type: "number", required: true },
     { name: "tag", label: "Tag", type: "select" }

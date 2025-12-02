@@ -106,9 +106,23 @@ const updateHabit = async (req: Request, res: Response) => {
     return res.status(200).json(updatedHabit)
 }
 
+//update a habit partially
+// This allows updating only specific fields without requiring all fields to be present
 const updatePartialHabit = async (req: Request, res: Response) => {
     const { _id } = req.params
     const updates = req.body;
+
+
+    // Validate that the request body is not empty or contains only undefined values 
+    const filterObject = Object.fromEntries(
+        Object.entries(updates).filter(([_, value]) => value !== undefined && value !== null)
+    );
+
+    if (Object.keys(filterObject).length === 0) {
+        return res.status(400).send({ message: "Body cannot be empty or contain only undefined values." });
+    }
+
+    // Check if the habit exists
     if (updates.length === 0) {
         return res.status(400).send({ message: "Body cannot be empty for PATCH request." });
     }
