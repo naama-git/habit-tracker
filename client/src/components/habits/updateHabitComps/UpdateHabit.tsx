@@ -6,6 +6,8 @@ import styles from './UpdateHabit.module.css'
 import { useHabitStore } from '../../../store/HabitStore'
 import dayjs from 'dayjs'
 import type { IHabit } from '../../../types/IHabit'
+import { useHabitContext } from '../../../context/HabitContext'
+
 // import { useParams } from 'react-router-dom'
 
 // import dateValidation from '../../../utils/habitUtils'
@@ -29,6 +31,7 @@ const UpdateHabit: React.FC<UpdateHabitProps> = ({ onEditMode, setOnEditMode }) 
 
   const [form] = Form.useForm();
   const { habit, updateHabit } = useHabitStore()
+  const { userTags } = useHabitContext()
 
   const timeFormat = "HH:mm";
   const dateFormat = "YYYY-MM-DD";
@@ -45,8 +48,12 @@ const UpdateHabit: React.FC<UpdateHabitProps> = ({ onEditMode, setOnEditMode }) 
 
   // onFinish - update habit
   const onFinish = (values: IHabit) => {
-    values.time =  dayjs(values.time).format('HH:mm') 
+    values.time = dayjs(values.time).format('HH:mm')
+    console.log(userTags);
+    values.tag = userTags;
+
     updateHabit(habit._id, values)
+    setOnEditMode();
   }
 
   return (
