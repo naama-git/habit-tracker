@@ -3,6 +3,7 @@
 import { Request, Response } from "express";
 import Habit from '../models/Habit'
 import HabitLog from '../models/HabitLog'
+import { log } from "node:console";
 
 
 
@@ -109,10 +110,10 @@ const updateHabit = async (req: Request, res: Response) => {
 //update a habit partially
 // This allows updating only specific fields without requiring all fields to be present
 const updatePartialHabit = async (req: Request, res: Response) => {
+
     const { _id } = req.params
     const updates = req.body;
-
-
+    
     // Validate that the request body is not empty or contains only undefined values 
     const filterObject = Object.fromEntries(
         Object.entries(updates).filter(([_, value]) => value !== undefined && value !== null)
@@ -123,11 +124,11 @@ const updatePartialHabit = async (req: Request, res: Response) => {
     }
 
     // Check if the habit exists
-    if (updates.length === 0) {
-        return res.status(400).send({ message: "Body cannot be empty for PATCH request." });
-    }
+    // if (updates.length === 0) {
+    //     return res.status(400).send({ message: "Body cannot be empty for PATCH request." });
+    // }
 
-    const updatedHabit = await Habit.findByIdAndUpdate(_id, { $set: updates }, { new: true })
+    const updatedHabit = await Habit.findByIdAndUpdate(_id, { $set: filterObject }, { new: true })
 
     if (!updatedHabit) {
         return res.status(500).json({ message: "Failed to update habit" })

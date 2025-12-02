@@ -21,7 +21,7 @@ interface HabitState {
     addHabit: (habit: IHabit, token: string) => Promise<void>;
     deleteHabit: (_id: string) => Promise<void>;
     getOneHabit: (_id: string) => Promise<void>;
-    updateHabit: (_id: string,updates:Partial<IHabit>) => Promise<void>;
+    updateHabit: (_id: string | undefined, updates: Partial<IHabit>) => Promise<void>;
 }
 
 
@@ -81,7 +81,7 @@ export const useHabitStore = create<HabitState>((set: any) => ({
         }
     },
 
-    updateHabit: async (_id: string | undefined ,updates:Partial<IHabit>) => {
+    updateHabit: async (_id: string | undefined, updates: Partial<IHabit>) => {
 
         if (!_id) {
             return;
@@ -89,12 +89,13 @@ export const useHabitStore = create<HabitState>((set: any) => ({
         set({ loading: true, error: null });
 
         try {
-            const habit = await updateHabit(_id,updates)
+            const habit = await updateHabit(_id, updates)
             set((state: HabitState) => ({ habit: state.habit = habit, loading: false }));
-            console.log(habit);
-            
+            console.log("updated habit", habit)
+
         } catch (error: any) {
             set({ error: error.message || "Unknown error", loading: false });
+            console.log("error updating habit:", error.message);
         }
     }
 

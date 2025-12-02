@@ -28,7 +28,7 @@ type Errors = {
 const UpdateHabit: React.FC<UpdateHabitProps> = ({ onEditMode, setOnEditMode }) => {
 
   const [form] = Form.useForm();
-  const { habit } = useHabitStore()
+  const { habit, updateHabit } = useHabitStore()
 
   const timeFormat = "HH:mm";
   const dateFormat = "YYYY-MM-DD";
@@ -42,23 +42,18 @@ const UpdateHabit: React.FC<UpdateHabitProps> = ({ onEditMode, setOnEditMode }) 
     time: habit.time ? dayjs(habit.time, timeFormat) : null
   }
 
+
+  // onFinish - update habit
   const onFinish = (values: IHabit) => {
-    console.log('Form values:', values);
-    
-    
+    values.time =  dayjs(values.time).format('HH:mm') 
+    updateHabit(habit._id, values)
   }
-
-  useEffect(() => {
-    console.log("habit (update)", habit);
-
-
-  }, [])
 
   return (
     <>
 
       {
-        onEditMode && 
+        onEditMode &&
         <div>
           <Space >
             <CloseOutlined
