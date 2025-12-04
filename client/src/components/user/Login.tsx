@@ -7,7 +7,6 @@
 
 import { Form, Input, Button, notification } from "antd";
 import { EyeInvisibleOutlined, EyeTwoTone } from "@ant-design/icons";
-import axios, { AxiosError } from "axios";
 import { useEffect, useState } from "react";
 import type { IUser } from "../../types/IUser";
 import { useUserStore } from "../../store/UserStore";

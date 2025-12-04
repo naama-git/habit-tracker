@@ -5,6 +5,7 @@ import App from './App.tsx'
 import ConfigProvider from 'antd/es/config-provider/index'
 import { NotificationProvider } from './context/NotificationContext.tsx'
 import { HabitProvider } from './context/HabitContext.tsx'
+import { MessageProvider } from './context/MessageContext.tsx'
 
 const sharedFieldStyle = {
   colorBgContainer: "transparent",
@@ -42,7 +43,9 @@ createRoot(document.getElementById('root')!).render(
     <StrictMode>
       <NotificationProvider>
         <HabitProvider>
-        <App />
+          <MessageProvider>
+            <App />
+          </MessageProvider>
         </HabitProvider>
       </NotificationProvider>
     </StrictMode>

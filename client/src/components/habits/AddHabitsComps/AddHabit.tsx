@@ -11,6 +11,7 @@ import type { IHabit } from '../../../types/IHabit'
 import { useHabitContext } from '../../../context/HabitContext'
 import { useNotificationContext } from '../../../context/NotificationContext'
 import { useHabitStore } from '../../../store/HabitStore'
+import { useMessageContext } from '../../../context/MessageContext'
 
 
 const AddHabit: React.FC = () => {
@@ -23,9 +24,10 @@ const AddHabit: React.FC = () => {
     // ------ 🎨states for view ------
 
     const [open, setOpen] = useState<boolean | undefined>(false)
-    const [disabled,setDisabled]=useState<boolean>(true)
+    const [disabled, setDisabled] = useState<boolean>(true)
 
     const { openNotification, contextHolder } = useNotificationContext()
+    const { openMessage } = useMessageContext()
 
     // ------ change the habit draft accrding to input change events
     const handleChange = (field: keyof (IHabit), value: any) => {
@@ -67,12 +69,12 @@ const AddHabit: React.FC = () => {
         const token = localStorage.getItem('token')
         if (!token) {
             console.log("Please Log In First");
-            openNotification("error", "Please Log In First");
+            openMessage("error", "Please Log In First");
             return;
         }
 
-
         addHabit(habit, token)
+        openMessage("success", "Habit Added Successfully")
 
         setHabitDraft({})
         setTimeout(() => {
@@ -82,8 +84,8 @@ const AddHabit: React.FC = () => {
     }
 
     useEffect(() => {
-        // console.log("habitDraft:", habitDraft);
-        if(habitDraft.habitName&&habitDraft.time&&habitDraft.frequency){
+
+        if (habitDraft.habitName && habitDraft.time && habitDraft.frequency) {
             setDisabled(false)
         }
     }, [habitDraft])
@@ -111,7 +113,7 @@ const AddHabit: React.FC = () => {
                     changeDates={changeDates}
                     clickOK={clickOK}
                     disabled={disabled}
-                    
+
                 />
             }
 

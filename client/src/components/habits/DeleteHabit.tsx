@@ -10,6 +10,7 @@ import type { PopconfirmProps } from 'antd'
 import { DeleteOutlined } from '@ant-design/icons';
 import { useNotificationContext } from '../../context/NotificationContext';
 import { useHabitStore } from '../../store/HabitStore';
+import { useMessageContext } from '../../context/MessageContext';
 
 // ----- props -----
 type DeleteHabitProps = {
@@ -19,7 +20,7 @@ type DeleteHabitProps = {
 const DeleteHabit: React.FC<DeleteHabitProps> = ({ _id }) => {
 
     // ----- 🎨 state for notification
-    const { contextHolder, openNotification } = useNotificationContext()
+    const { openMessage } = useMessageContext()
     const { deleteHabit, error } = useHabitStore()
 
     // delete habit
@@ -27,11 +28,11 @@ const DeleteHabit: React.FC<DeleteHabitProps> = ({ _id }) => {
         if (!_id || _id === undefined) return;
         try {
             await deleteHabit(_id)
-            openNotification("success", "habit deleted successfully")
+            openMessage("success", "habit deleted successfully")
         }
         catch(err){
             console.log(error);
-            openNotification()
+            openMessage("error", "Failed to delete habit")
         }
     }
 
@@ -47,7 +48,7 @@ const DeleteHabit: React.FC<DeleteHabitProps> = ({ _id }) => {
 
     return (
         <div>
-            {contextHolder}
+            
             <Popconfirm
                 title="Delete the task"
                 description="Are you sure you want to delete this task?"
