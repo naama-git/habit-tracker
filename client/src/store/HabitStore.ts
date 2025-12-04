@@ -6,6 +6,7 @@
 import { create } from "zustand";
 import { getHabits, addHabit, deleteHabit, getOneHabit, updateHabit } from "../services/habitService";
 import type { IHabit } from "../types/IHabit";
+import { useUserStore } from "./UserStore";
 
 // store type
 
@@ -25,13 +26,14 @@ interface HabitState {
 }
 
 
-export const useHabitStore = create<HabitState>((set: any) => ({
+export const useHabitStore = create<HabitState>((set) => ({
 
+    //types & actions
+    //initial state
     habits: [],
     habit: {} as IHabit,
     loading: false,
     error: null,
-
 
     // get habit from service 
     getHabits: async (token: string) => {
@@ -39,6 +41,7 @@ export const useHabitStore = create<HabitState>((set: any) => ({
         try {
             const data = await getHabits(token);
             set({ habits: data, loading: false });
+
         } catch (err: any) {
             set({ error: err.message || "Unknown error", loading: false });
         }
@@ -73,7 +76,7 @@ export const useHabitStore = create<HabitState>((set: any) => ({
         set({ loading: true, error: null });
         try {
             const habit = await getOneHabit(_id);
-            set((state: HabitState) => ({ habit: state.habit = habit, loading: false }));
+            set(() => ({ habit, loading: false }));
             console.log("habitstore", habit);
 
         } catch (err: any) {
@@ -90,13 +93,24 @@ export const useHabitStore = create<HabitState>((set: any) => ({
 
         try {
             const habit = await updateHabit(_id, updates)
-            set((state: HabitState) => ({ habit: state.habit = habit, loading: false }));
-            console.log("updated habit", habit)
+            set(() => ({ habit, loading: false }));
+            // console.log("updated habit", habit)
 
         } catch (error: any) {
             set({ error: error.message || "Unknown error", loading: false });
-            console.log("error updating habit:", error.message);
+            // console.log("error updating habit:", error.message);
         }
     }
 
+
 }));
+
+useUserStore.subscribe(
+    (newState, oldState) => {
+        if (newState.token !== oldState.token) {
+            useHabitStore.getState().getHabits(newState.token);
+            console.log('new user');
+        }
+    }
+)
+

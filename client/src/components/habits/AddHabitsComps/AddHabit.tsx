@@ -19,7 +19,7 @@ const AddHabit: React.FC = () => {
     const [habitDraft, setHabitDraft] = useState<Partial<IHabit>>({})
     const { userTags } = useHabitContext()
 
-    const { addHabit } = useHabitStore();
+    const addHabit = useHabitStore((state) => state.addHabit);
 
     // ------ 🎨states for view ------
 

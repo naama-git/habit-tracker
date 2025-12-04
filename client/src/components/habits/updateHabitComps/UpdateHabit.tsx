@@ -1,4 +1,4 @@
-import React, {  useEffect } from 'react'
+import React from 'react'
 import UpdateHabitView from './UpdateHabitView'
 import { Space, Form } from 'antd'
 import { CloseOutlined } from '@ant-design/icons'
@@ -14,16 +14,6 @@ interface UpdateHabitProps {
   onEditMode: boolean,
   setOnEditMode: () => void
 }
-
-type Errors = {
-  habitName?: string
-  time?: string
-  frequency?: string
-  dates?: string
-  endDate?: string
-
-}
-
 
 const UpdateHabit: React.FC<UpdateHabitProps> = ({ onEditMode, setOnEditMode }) => {
 

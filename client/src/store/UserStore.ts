@@ -31,11 +31,9 @@ export const useUserStore = create<UserState>((set: any) => ({
     login: async (user: IUser) => {
         set({ loading: true, error: null });
         try {
-            const data = await login(user);
-            console.log("userStore_data:", data);
-
-            set({ token: data, loading: false });
-            // localStorage.setItem('userToken')
+            const {accessToken} = await login(user);
+            set({ token: accessToken, loading: false });
+            localStorage.setItem('token', accessToken)
         } catch (err: any) {
             set({ error: err.message || "Unknown error", loading: false });
         }

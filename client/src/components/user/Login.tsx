@@ -4,14 +4,12 @@
  📃 Description : Login form component
 ------------------------------------------------------------------------------*/
 
-
+//קריטי!! לטפל בסיסמא!
 import { Form, Input, Button, notification } from "antd";
 import { EyeInvisibleOutlined, EyeTwoTone } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import type { IUser } from "../../types/IUser";
 import { useUserStore } from "../../store/UserStore";
-
-
 
 const Login: React.FC = () => {
 
@@ -21,7 +19,7 @@ const Login: React.FC = () => {
   //------ Types ------
   type loginIUser = Pick<IUser, 'userName' | 'password'>;
   const [user, setUser] = useState<loginIUser | null>(null)
-  const {login,error}=useUserStore()
+  const { login, error } = useUserStore()
 
   //------ Disable submit button ------
   const [disable, setDisable] = useState<boolean>(true)
@@ -33,13 +31,13 @@ const Login: React.FC = () => {
   const sendUserData = async (user: loginIUser | null) => {
 
     if (!user) return;
-    
+
     login(user)
-    if(error){
-      openNotification("error",error)
+    if (error) {
+      openNotification("error", error)
     }
-    else{
-      openNotification("success",user.userName + " logged in successfully")
+    else {
+      openNotification("success", "Welcome back " + user.userName)
     }
     //----- Reset form fields -----
     resetFields();
