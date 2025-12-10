@@ -9,9 +9,6 @@ import { log } from "node:console";
 
 const signin = async (req: Request, res: Response) => {
 
-    // const { user } = req.body
-    // const { userName, email, password } = user
-    // console.log("in signup");
     const { userName, email, password } = req.body
 
     const hashedPwd = await bcrypt.hash(password, 10)
@@ -40,6 +37,7 @@ const login = async (req: Request, res: Response) => {
         return res.status(404).json({ massage: "Invalid user1" })
     }
     const match = await bcrypt.compare(password, user.password)
+    
     if (!match) {
         return res.status(401).json({ massage: "Invalid user" })
     }

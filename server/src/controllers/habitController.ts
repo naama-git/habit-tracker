@@ -14,12 +14,12 @@ const getHabits = async (req: Request, res: Response) => {
     if (!user) {
         return res.status(401).json({ message: 'Unauthorized' })
     }
+    let habits = []
+    habits = await Habit.find({ userId: user._id }).lean()
 
-    const habits = await Habit.find({ userId: user._id }).lean()
-
-    if (!habits || habits.length === 0) {
-        return res.status(404).json({ message: "No habits found" })
-    }
+    // if (!habits || habits.length === 0) {
+    //     return res.status(404).json({ message: "No habits found", habits: [] })
+    // }
     return res.status(200).json(habits)
 }
 
@@ -113,7 +113,7 @@ const updatePartialHabit = async (req: Request, res: Response) => {
 
     const { _id } = req.params
     const updates = req.body;
-    
+
     // Validate that the request body is not empty or contains only undefined values 
     const filterObject = Object.fromEntries(
         Object.entries(updates).filter(([_, value]) => value !== undefined && value !== null)
