@@ -14,35 +14,33 @@ const habitSchema = new mongoose.Schema({
         lowercase: true
     },
     frequency: {
-        // type: mongoose.Schema.Types.Number,
-        // required: true,
-        // min: 1,
-        // max: 30
-        enum: ['Daily', 'Weekly', 'Monthly'],
+        enum: ['daily', 'weekly', 'monthly'],
         type: mongoose.Schema.Types.String,
         required: true,
-        default: 'Daily',
+        default: 'daily',
+        lowercase: true
 
     },
-    daysInmonth: {
+    daysInMonth: {
         type: [Number],
         min: 1,
         max: 30,
-        required: function (): boolean { return this.frequency === 'Monthly' ? true : false },
+        required: function (): boolean { return this.frequency === 'monthly' ? true : false },
         default: function () {
-            if (this.frequency === 'Monthly') {
-                return [];
+            if (this.frequency === 'monthly') {
+                return []
             }
             return undefined;
         }
     },
 
-    daysInweek: {
-        type: [String],
-        enum: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
-        required: function (): boolean { return this.frequency === 'Weekly' ? true : false },
+    daysInWeek: {
+        type: [Number],
+        min:1,
+        max:7,
+        required: function (): boolean { return this.frequency === 'weekly' ? true : false },
         default: function () {
-            if (this.frequency === 'Weekly') {
+            if (this.frequency === 'weekly') {
                 return [];
             }
             return undefined;
@@ -76,13 +74,12 @@ habitSchema.pre('save', function (next) {
 
     const doc = this as any;
 
-    if (doc.frequency === 'Weekly') {
-        doc.daysInmonth = undefined; 
-
-    } 
-    else if (doc.frequency === 'Monthly') {
-        doc.daysInweek = undefined;
-    } 
+    if (doc.frequency === 'weekly') {
+        doc.daysInMonth = undefined;
+    }
+    else if (doc.frequency === 'monthly') {
+        doc.daysInWeek = undefined;
+    }
     else {
         doc.daysInweek = undefined;
         doc.daysInmonth = undefined;

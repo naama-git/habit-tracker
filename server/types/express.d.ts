@@ -4,6 +4,7 @@ declare global {
   namespace Express {
     interface Request {
       user?: import ('../src/models/User').User; 
+      currentHabit?: import ('../src/models/Habit').Habit;
     }
   }
 }

@@ -3,10 +3,49 @@ import { Request, Response, NextFunction } from 'express'
 import Habit from '../../models/Habit';
 
 
-// וולידציה לשדות
+// validation for creating a habit
 export const habitValidation = [
   body('habitName').notEmpty().withMessage('HabitName is required'),
-  body('frequency').notEmpty().isInt({ min: 1 }).withMessage('Frequency must be at least 1 '),
+  body('frequency').notEmpty().withMessage('Frequency is requiered'),
+
+  // validation for daysInWeek when frequency is weekly
+  body('daysInWeek')
+    .custom((value, { req }) => {
+      const frequency = req.body.frequency ? req.body.frequency.toLowerCase() : '';
+
+      if (frequency === 'weekly') {
+        if (!Array.isArray(value) || value.length === 0) {
+          throw new Error('You must select at least one day of the week when frequency is weekly');
+        }
+      }
+      else {
+        
+        if (value && value.length > 0) {
+          throw new Error(`Days in week should not be provided when frequency is ${frequency || 'other'}`);
+        }
+      }
+      return true;
+    }),
+
+  // validation for daysInMonth when frequency is monthly
+  body('daysInMonth')
+    .custom((value, { req }) => {
+      const frequency = req.body.frequency ? req.body.frequency.toLowerCase() : '';
+
+      if (frequency === 'monthly') {
+        if (!value.length) {
+          throw new Error('You must select at least one day of the month when frequency is monthly');
+        }
+      }
+  
+      else {
+        if (value) {
+          throw new Error(`Days in month should not be provided when frequency is ${frequency || 'other'}`);
+        }
+      }
+      return true;
+    })
+  ,
   body('time').notEmpty().withMessage('Time is required'),
   body('time').matches(/^([01]\d|2[0-3]):([0-5]\d)$/).withMessage('Time must be in HH:mm format'),
   body('startDate').optional({ nullable: true }).isISO8601().withMessage('Start date must be a valid date'),
@@ -20,9 +59,11 @@ export const habitValidation = [
 
 ];
 
+
+
 // for updating
 export const partialHabitVaildation = [
-  body('frequency').optional({ nullable: true }).isInt({ min: 1 }).withMessage('Frequency must be at least 1 '),
+  ,
   body('time').optional().matches(/^([01]\d|2[0-3]):([0-5]\d)$/).withMessage('Time must be in HH:mm format'),
   body('startDate').optional({ nullable: true }).isISO8601().withMessage('Start date must be a valid date'),
   body('startDate').optional({ nullable: true }).isISO8601().withMessage('Start date must be a valid ISO 8601 date format').toDate(),
@@ -34,7 +75,7 @@ export const partialHabitVaildation = [
       if (!relevantEndDate) {
         const existingHabit = await Habit.findById(_id).select('endDate');
         if (existingHabit && existingHabit.endDate) {
-          relevantEndDate = existingHabit.endDate; 
+          relevantEndDate = existingHabit.endDate;
         }
       }
       if (newStartDate && relevantEndDate instanceof Date) {
@@ -46,14 +87,14 @@ export const partialHabitVaildation = [
       return true;
     }),
 
-    body('endDate')
+  body('endDate')
     .custom(async (newEndDate, { req }) => {
       const { _id } = req.params;
       let relevantStartDate = req.body.startDate;
       if (!relevantStartDate) {
         const existingHabit = await Habit.findById(_id).select('startDate');
         if (existingHabit && existingHabit.startDate) {
-          relevantStartDate = existingHabit.startDate; 
+          relevantStartDate = existingHabit.startDate;
         }
       }
       if (newEndDate && relevantStartDate instanceof Date) {
@@ -61,10 +102,11 @@ export const partialHabitVaildation = [
           throw new Error('Start date must be before end date (Current Start Date: ' + relevantStartDate.toISOString().split('T')[0] + ')');
         }
       }
-
       return true;
     }),
 ]
+
+
 
 
 export const validateRequest = (req: Request, res: Response, next: NextFunction) => {

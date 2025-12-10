@@ -37,13 +37,10 @@ const getHabitById = async (req: Request, res: Response) => {
 const createHabit = async (req: Request, res: Response) => {
     const user = req.user
 
-
     if (!user) {
         return res.status(401).json({ message: 'Unauthorized' })
     }
-    const { habitName, description, tag, frequency, startDate, endDate, time } = req.body
-    // console.log("tags:",tag);
-
+    const { habitName, description, tag, frequency, daysInMonth, daysInWeek, startDate, endDate, time } = req.body
 
     let sendStartDate: Date = startDate;
     if (sendStartDate === undefined) {
@@ -52,7 +49,22 @@ const createHabit = async (req: Request, res: Response) => {
     if (endDate !== undefined && new Date(endDate) < new Date(sendStartDate)) {
         return res.status(400).json({ message: "End date must be after start date" })
     }
-    const habit = await Habit.create({ habitName, description, tag, frequency, startDate: sendStartDate, endDate, time, userId: user._id })
+
+
+    let habit = {}
+    if (frequency === "monthly") {
+        habit = await Habit.create({ habitName, description, tag, frequency: frequency.toLowerCase(), daysInMonth, startDate: sendStartDate, endDate, time, userId: user._id })
+    }
+    else if (frequency === "weekly") {
+        habit = await Habit.create({ habitName, description, tag, frequency: frequency.toLowerCase(), daysInWeek, startDate: sendStartDate, endDate, time, userId: user._id })
+
+    }
+    else {
+        habit = await Habit.create({ habitName, description, tag, frequency: frequency.toLowerCase(), startDate: sendStartDate, endDate, time, userId: user._id })
+    }
+    if (!habit) {
+        return res.status(500).json({ message: "Failed to create habit" })
+    }
     return res.status(201).json(habit)
 }
 
@@ -77,11 +89,7 @@ const deleteHabit = async (req: Request, res: Response) => {
 const updateHabit = async (req: Request, res: Response) => {
     const { id } = req.params
     const { habitName, description, tag, frequency, startDate, endDate, time } = req.body
-    // console.log(`${habitName}, ${description}, ${tag}, ${frequency}, ${startDate}, ${endDate}, ${time}`);
 
-    // if (!habitName || !description || !tag || !frequency || !time) {
-    //     return res.status(400).json({ message: "Name, description, tag, frequency and time are required" })
-    // }
     const habit = await Habit.findById(id).exec()
     if (!habit) {
         return res.status(404).json({ message: "Habit not found" })
@@ -123,13 +131,17 @@ const updatePartialHabit = async (req: Request, res: Response) => {
         return res.status(400).send({ message: "Body cannot be empty or contain only undefined values." });
     }
 
-    // Check if the habit exists
-    // if (updates.length === 0) {
-    //     return res.status(400).send({ message: "Body cannot be empty for PATCH request." });
-    // }
+    //טעון בירור
+    const habit = await Habit.findById(_id).exec()
+    if (!habit) {
+        return res.status(404).json({ message: "Habit not found" })
+    }
 
-    const updatedHabit = await Habit.findByIdAndUpdate(_id, { $set: filterObject }, { new: true })
+    Object.keys(updates).forEach((key)=>{
+        habit[key]=updates[key]//fix
+    })
 
+    const updatedHabit = await habit.save()
     if (!updatedHabit) {
         return res.status(500).json({ message: "Failed to update habit" })
     }
