@@ -21,17 +21,22 @@ const DeleteHabit: React.FC<DeleteHabitProps> = ({ _id }) => {
 
     // ----- 🎨 state for notification
     const { openMessage } = useMessageContext()
-    const { deleteHabit, error } = useHabitStore()
+    const { deleteHabit } = useHabitStore()
 
     // delete habit
     const deleteH = async () => {
+        const token = localStorage.getItem('token')
+        if (!token) {
+            openMessage("error", "please log in first")
+            return
+        }
         if (!_id || _id === undefined) return;
         try {
-            await deleteHabit(_id)
+            await deleteHabit(_id, token)
             openMessage("success", "habit deleted successfully")
         }
-        catch(err){
-            console.log(error);
+        catch (err) {
+            console.log(err);
             openMessage("error", "Failed to delete habit")
         }
     }
@@ -41,14 +46,9 @@ const DeleteHabit: React.FC<DeleteHabitProps> = ({ _id }) => {
         deleteH()
     };
 
-    useEffect(()=>{
-        console.log("on delete habit");
-        
-    },[])
-
     return (
         <div>
-            
+
             <Popconfirm
                 title="Delete the task"
                 description="Are you sure you want to delete this task?"

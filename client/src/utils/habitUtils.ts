@@ -1,14 +1,14 @@
 
+
 import { useHabitStore } from "../store/HabitStore"
 
 import type { IHabit } from "../types/IHabit"
 
-// const {Habit}=useHabitStore
 
 // date validation
-const datesValidation = (startDate: Date | null, endDate: Date | null): { message: string | null } => {
+export const datesValidation = (startDate: Date | null | undefined, endDate: Date | null | undefined): { message: string | null } => {
 
-    if (startDate && endDate) {
+    if (startDate && endDate && startDate !== undefined && endDate !== undefined) {
         if (startDate.getTime() >= endDate.getTime())
             return { message: "Start Date must be before End Date" }
 
@@ -20,6 +20,39 @@ const datesValidation = (startDate: Date | null, endDate: Date | null): { messag
 
     return { message: null };
 
+}
+
+// frequency validation
+export const frequencyValidation = (frequency: "daily" | "monthly" | "weekly", daysOfWeek?: number[], daysOfMonth?: number[]): { message: string | null } => {
+    if (frequency === 'weekly') {
+        if (daysOfMonth && daysOfMonth.length > 0) {
+            return { message: `Days in month should not be provided when frequency is ${frequency || 'other'}` }
+        }
+        if (!Array.isArray(daysOfWeek) || daysOfWeek.length == 0) {
+            return { message: 'You must select at least one day of the week when frequency is weekly' }
+        }
+        daysOfWeek.forEach((element: number) => {
+            if (element < 0 || element > 6) {
+                return { message: 'Days in week must be between 0 (Sunday) and 6 (Saturday)' };
+            }
+        });
+    }
+    else if (frequency === "monthly") {
+
+        if (daysOfWeek && (daysOfWeek.length > 0)) {
+            return { message: `Days in week should not be provided when frequency is ${frequency || 'other'}` }
+        }
+        if (!Array.isArray(daysOfMonth) || daysOfMonth.length == 0) {
+            return { message: 'You must select at least one day of the month when frequency is monthly' }
+        }
+        daysOfMonth.forEach((element: number) => {
+            if (element < 0 || element > 6) {
+                return { message: 'Days in month must be between 1 and 31' };
+            }
+        });
+
+    }
+    return { message: null }
 }
 
 // filter updated object from undefined fields and idential values
@@ -39,7 +72,7 @@ const datesValidation = (startDate: Date | null, endDate: Date | null): { messag
 
 
 
-export default { datesValidation }
+// export default { datesValidation }
 
 
 

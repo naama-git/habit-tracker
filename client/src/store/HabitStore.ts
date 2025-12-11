@@ -20,7 +20,7 @@ interface HabitState {
 
     getHabits: (token: string) => Promise<void>;
     addHabit: (habit: IHabit, token: string) => Promise<void>;
-    deleteHabit: (_id: string) => Promise<void>;
+    deleteHabit: (_id: string, token:string) => Promise<void>;
     getOneHabit: (_id: string) => Promise<void>;
     updateHabit: (_id: string | undefined, updates: Partial<IHabit>) => Promise<void>;
 }
@@ -55,15 +55,17 @@ export const useHabitStore = create<HabitState>((set) => ({
             const newHabit = await addHabit(habit, token);
             set((state: HabitState) => ({ habits: [...state.habits, newHabit], loading: false }));
         } catch (err: any) {
+            console.log(err);
+            
             set({ error: err.message || "Unknown error", loading: false });
         }
     },
 
     // delete habit
-    deleteHabit: async (_id: string) => {
+    deleteHabit: async (_id: string, token:string) => {
         set({ loading: true, error: null });
         try {
-            await deleteHabit(_id);
+            await deleteHabit(_id,token);
             set((state: HabitState) => ({ habits: state.habits.filter(h => h._id !== _id), loading: false }));
         } catch (err: any) {
             set({ error: err.message || "Unknown error", loading: false });

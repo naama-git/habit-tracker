@@ -4,20 +4,22 @@
  📃 Description : A logic and API for add Habit
 ------------------------------------------------------------------------------*/
 
-import { Button } from 'antd'
-import React, { useEffect, useState } from 'react'
+import { Button, Form } from 'antd'
+import React, { useState } from 'react'
 import AddHabitView from './AddHabitView'
 import type { IHabit } from '../../../types/IHabit'
 import { useHabitContext } from '../../../context/HabitContext'
-import { useNotificationContext } from '../../../context/NotificationContext'
 import { useHabitStore } from '../../../store/HabitStore'
 import { useMessageContext } from '../../../context/MessageContext'
+import dayjs from 'dayjs'
+import { datesValidation, frequencyValidation } from '../../../utils/habitUtils'
+
 
 
 const AddHabit: React.FC = () => {
 
-    const [habitDraft, setHabitDraft] = useState<Partial<IHabit>>({})
     const { userTags } = useHabitContext()
+    const [form] = Form.useForm()
 
     const addHabit = useHabitStore((state) => state.addHabit);
 
@@ -26,45 +28,10 @@ const AddHabit: React.FC = () => {
     const [open, setOpen] = useState<boolean | undefined>(false)
     const [disabled, setDisabled] = useState<boolean>(true)
 
-    const { openNotification, contextHolder } = useNotificationContext()
     const { openMessage } = useMessageContext()
 
-    // ------ change the habit draft accrding to input change events
-    const handleChange = (field: keyof (IHabit), value: any) => {
-        setHabitDraft({ ...habitDraft, [field]: value })
-    }
-
-    // ------- responsible for start date & end date
-    const changeDates = (value?: { a?: Date, b?: Date }) => {
-        console.log("value", value);
-        if (!value) return
-        if (value.a) {
-            setHabitDraft((prev) => ({ ...prev, startDate: value.a }))
-        }
-        if (value.b)
-            setHabitDraft((prev) => ({ ...prev, endDate: value.b }))
-    }
-
-    //------ 🧠 validate fields -------
-
-    const checkFieds = () => {
-        if (!habitDraft.habitName || !habitDraft.frequency || !habitDraft.time) {
-            console.log("Fields are Required");
-            openNotification("error", "Required Fields are Empty")
-            return;
-        }
-        if (!habitDraft.startDate)
-            setHabitDraft({ ...habitDraft, startDate: new Date() })
-        const habit: IHabit = {
-            ...habitDraft,
-            startDate: habitDraft.startDate || new Date(),
-            tag: userTags,
-        } as IHabit;
-        sendHabit(habit)
-    }
-
     // ----- send habit to server -----
-    const sendHabit = async (habit: IHabit) => {
+    const sendHabit = (habit: IHabit) => {
 
         const token = localStorage.getItem('token')
         if (!token) {
@@ -72,33 +39,66 @@ const AddHabit: React.FC = () => {
             openMessage("error", "Please Log In First");
             return;
         }
-
-        addHabit(habit, token)
-        openMessage("success", "Habit Added Successfully")
-
-        setHabitDraft({})
-        setTimeout(() => {
-            setOpen(false)
-        }, 1000)
+        try {
+            addHabit(habit, token)
+            openMessage("success", "Habit Added Successfully")
+            setTimeout(() => {
+                setOpen(false)
+            }, 1000)
+        } catch (error) {
+            openMessage("error", error)
+        }
 
     }
 
-    useEffect(() => {
-
-        if (habitDraft.habitName && habitDraft.time && habitDraft.frequency) {
-            setDisabled(false)
+    // checks whether required fields are exists
+    const requiredFieldsValidation = (habit: IHabit): boolean => {
+        if (habit.habitName && habit.frequency && habit.time) {
+            return false
         }
-    }, [habitDraft])
+        return true
+    }
 
-    const clickOK = () => {
-        checkFieds()
+    
+    const onValuesChange = (_: any, allValues: any) => {
+        setDisabled(requiredFieldsValidation(allValues));
+    }
+    
+    const onFinish = (values: any) => {
+
+        form.resetFields()
+
+        let message: { message: String | null }
+
+        message = datesValidation(values.dateRange?.[0], values.dateRange?.[1])
+        if (message.message) {
+            openMessage("error", message.message)
+            return;
+        }
+
+        message = frequencyValidation(values.frequency, values.daysInWeek, values.daysInMonth)
+        if (message.message) {
+            openMessage("error", message.message)
+            return;
+        }
+
+        let habit = {
+            habitName: values.habitName,
+            description: values.description,
+            frequency: values.frequency,
+            daysInMonth: values.daysInMonth,
+            daysInWeek: values.daysInWeek,
+            startDate: values.dateRange?.[0] ? values.dateRange[0].toDate() : new Date(),
+            endDate: values.dateRange?.[1] ? values.dateRange[1].toDate() : undefined,
+            time: dayjs(values.time).format('HH:mm').toString(),
+            tag: userTags
+        }
+        sendHabit(habit as IHabit)
+
     }
 
     return (
         <div>
-            {/* notification */}
-
-            {contextHolder}
 
             {/* add Habit View  */}
             <Button type="primary" onClick={() => setOpen(true)} style={{ color: "black", fontWeight: "600", border: "none", padding: "0 20px", height: "42px", }}>
@@ -107,18 +107,19 @@ const AddHabit: React.FC = () => {
 
             {
                 open && <AddHabitView
+                    onValuesChange={onValuesChange}
                     open={open}
                     onCancel={() => setOpen(false)}
-                    handleChange={handleChange}
-                    changeDates={changeDates}
-                    clickOK={clickOK}
+                    form={form}
+                    onFinish={onFinish}
                     disabled={disabled}
-
                 />
             }
 
         </div>
     )
 }
-
 export default AddHabit
+
+
+

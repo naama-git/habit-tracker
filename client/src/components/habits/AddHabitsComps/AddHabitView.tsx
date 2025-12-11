@@ -4,8 +4,7 @@
  📃 Description : View for add habit form
 ------------------------------------------------------------------------------*/
 
-import { Modal, Form, Input, InputNumber, DatePicker, TimePicker, Divider } from 'antd';
-import { formFields, type FormField } from './Fields/fieldsForAddHabit';
+import { Modal, Form, Input, DatePicker, TimePicker, Divider, type FormInstance, Select, Checkbox, Row, Col, Button } from 'antd';
 import AddHabit_SelectTag from './AddHabit_SelectTag';
 import type { IHabit } from '../../../types/IHabit';
 import styles from './AddHabit.module.css'
@@ -13,65 +12,28 @@ import styles from './AddHabit.module.css'
 
 interface AddHabitViewProps {
   open: boolean | undefined
+
   onCancel: () => void
-  handleChange: (field: keyof (IHabit), value: any) => void
-  changeDates: (value?: { a?: Date, b?: Date }) => void
-  clickOK: () => void
+  form: FormInstance
+  onValuesChange?: (changedValues: any, allValues: any) => void
+  onFinish: (values: IHabit) => void
   disabled: boolean
+
 }
 
-const AddHabitView: React.FC<AddHabitViewProps> = ({ handleChange, changeDates, clickOK, open, onCancel, disabled }) => {
+const AddHabitView: React.FC<AddHabitViewProps> = ({ form, onFinish, open, onCancel, disabled, onValuesChange }) => {
 
   //------------------------ VIEW -----------------------------//
 
   //------- 🎨State to manage Modal visibility -----
-  // const [open, setOpen] = useState(false);
-  const [form] = Form.useForm();
+
   const format = 'HH:mm';
+  const frequencyValue = Form.useWatch('frequency', form);
 
-  // ------ 🧩 returns the fields with match data inputs
-  const renderField = (field: FormField) => {
-    switch (field.type) {
-      case "text":
-        return <Input size='large' onChange={(e) => { handleChange('habitName', e.target.value); }} />;
-      case "textarea":
-        return <Input.TextArea rows={3} onChange={(e) => { handleChange('description', e.target.value) }} />;
-      case "number":
-        return <InputNumber type="number" style={{ width: "100%" }} min={1} max={30} size='large' onChange={(e) => { handleChange('frequency', e?.valueOf()) }} />;
-      case "date":
-        return <DatePicker.RangePicker
-          placeholder={['Start Date', 'End Date']}
-          allowEmpty={[false, true]}
-
-          onChange={(date) => {
-
-            if (date) {
-              const a = date[0]?.toDate()
-              const b = date[1]?.toDate()
-              changeDates({ a, b })
-            }
-
-          }}
-          style={{ width: "100%" }}
-          size='large'
-        />
-      case "time":
-        return <TimePicker type="number" format={format} style={{ width: "100%" }} placeholder='HH:MM' showNow={true} size='large'
-          onChange={(e) => { handleChange('time', e.format("HH:mm")) }} />;
-      case "select":
-        return <AddHabit_SelectTag variant='outlined' />
-      default:
-        return <Input size='large' />;
-    }
-  };
-
-  //
-    const onFinish = (values: any) => {
-    console.log(values);
-  };
-
-
-
+  const numbers = Array.from({ length: 31 }, (_, i) => ({
+    label: `${i + 1}`,
+    value: i + 1,
+  }));
 
   return (
     <div className={styles['wrapper']}>
@@ -85,58 +47,135 @@ const AddHabitView: React.FC<AddHabitViewProps> = ({ handleChange, changeDates, 
         className={styles['modal']}
         open={open}
         onCancel={onCancel}
-        onOk={() => { form.resetFields(); clickOK() }}
         centered
         okButtonProps={{
-          style: { color: "black", borderRadius: "10px", fontWeight: "600" },
-          disabled: disabled
+          style: { display: "none" },
+
         }}
         cancelButtonProps={{ style: { display: "none" } }}
       >
-
         <Form
           form={form}
           layout="vertical"
           className={styles['form']}
+          onFinish={onFinish}
+          onValuesChange={onValuesChange}
         >
           {/* --- General Info Section --- */}
           <Divider style={{ borderColor: "#daeb28" }}> General Info</Divider>
-          {formFields.slice(0, 2).map((field) => (
-            <Form.Item
-              key={field.name}
-              label={field.label}
-              name={field.name}
-              rules={[{ required: field.required, message: `${field.label} is required` }]}
-            >
-              {renderField(field)}
-            </Form.Item>
-          ))}
+
+          <Form.Item
+            label="Habit Name"
+            name="habitName"
+            rules={[{ required: true, message: `Habit Name is required` }]}
+          >
+            <Input size='large' />
+          </Form.Item>
+
+          <Form.Item
+
+            label="Habit Description"
+            name="description"
+            rules={[{ max: 200, message: `Habit Description is required` }]}
+          >
+            <Input.TextArea rows={3} maxLength={200} />
+          </Form.Item>
+
 
           {/* --- Schedule Section --- */}
           <Divider style={{ borderColor: "#320988" }}> Schedule</Divider>
-          {formFields.slice(2, 5).map((field) => (
+
+          <Form.Item
+            label="Frequency "
+            name="frequency"
+            rules={[{ required: true, message: `Frequency is required` }]}
+          >
+            <Select size='large' placeholder="Select frequency"
+              options={[{ label: "Daily", value: "daily" }, { label: "Weekly", value: "weekly" }, { label: "Monthly", value: "monthly" }]} />
+          </Form.Item>
+
+          {
+            frequencyValue === 'weekly' &&
             <Form.Item
-              key={field.name}
-              label={field.label}
-              name={field.name}
-              rules={[{ required: field.required, message: `${field.label} is required` }]}
+              label="Day of the Week"
+              name="daysInWeek"
+              rules={[{ required: true, message: `Please select a day of the week` }]}
             >
-              {renderField(field)}
+              <Select size='large' placeholder="Select day of the week"
+                mode="multiple"
+                options={[
+                  { label: "Sunday", value: 0 },
+                  { label: "Monday", value: 1 },
+                  { label: "Tuesday", value: 2 },
+                  { label: "Wednesday", value: 3 },
+                  { label: "Thursday", value: 4 },
+                  { label: "Friday", value: 5 },
+                  { label: "Saturday", value: 6 },
+
+                ]} />
             </Form.Item>
-          ))}
+          }
+
+          {
+            frequencyValue === 'monthly' &&
+
+            <Form.Item
+              label="Day of the Month"
+              name="daysInMonth"
+              help="Select one or more days. if the selected day exceeds the number of days in a month, the habit will be scheduled on the last day of that month."
+              rules={[{ required: true, message: "Please select at least one day of the month" }]}
+              style={{ marginBottom: "20px" }}
+            >
+
+              <Checkbox.Group style={{ width: '100%' }}>
+                <Row gutter={[8, 8]}>
+                  {numbers.map((number) => (
+                    <Col span={3} key={number.value}>
+                      <Checkbox value={number.value}>{number.label}</Checkbox>
+                    </Col>
+                  ))}
+                </Row>
+              </Checkbox.Group>
+            </Form.Item>
+          }
+
+          <Form.Item
+            label="Time"
+            name="time"
+            rules={[{ required: true, message: `Time is required` }]}
+          >
+            <TimePicker type="number" format={format} style={{ width: "100%" }} placeholder='HH:MM' showNow={true} size='large' />
+          </Form.Item>
+
+          <Form.Item
+            label="Start and End Dates"
+            name="dateRange"
+          >
+            <DatePicker.RangePicker
+              placeholder={['Start Date', 'End Date']}
+              allowEmpty={[false, true]}
+              style={{ width: "100%" }}
+              size='large'
+            />
+          </Form.Item>
 
           {/* --- Tags Section --- */}
           <Divider style={{ borderColor: "#daeb28" }}> Tags</Divider>
-          {formFields.slice(5).map((field) => (
-            <Form.Item
-              key={field.name}
-              label={field.label}
-              name={field.name}
-              rules={[{ required: field.required, message: `${field.label} is required` }]}
-            >
-              {renderField(field)}
-            </Form.Item>
-          ))}
+
+          <Form.Item
+
+            label="Tags"
+            name="tag"
+            rules={[{ message: `Tags are required` }]}
+          >
+            <AddHabit_SelectTag variant='outlined' />
+          </Form.Item>
+          <Form.Item>
+            <Button
+              htmlType="submit"
+              className={styles['save-button']}
+              disabled={disabled}>Add</Button>
+          </Form.Item>
         </Form>
 
       </Modal>

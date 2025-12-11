@@ -3,13 +3,12 @@ export interface IHabit {
     habitName: string;
     description?: string;
     tag?: string[];
-    frequency: number | null;
+    frequency:' daily' | 'weekly' | 'monthly';
+    daysInMonth?: number[] | null;
+    daysInWeek?: number[] | null;
     startDate: Date | string;
     endDate?: Date | string | null;
     time: string; // Format HH:MM
 
 }
 
-// export interface IHabitWithId extends IHabit {
-//     _id: string;
-// }

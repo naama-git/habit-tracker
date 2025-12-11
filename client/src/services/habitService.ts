@@ -40,12 +40,17 @@ export const addHabit = async (habit: IHabit, token: string) => {
 }
 
 // delete user habit, by ID
-export const deleteHabit = async (_id: string) => {
+export const deleteHabit = async (_id: string, token: string) => {
     try {
-        const res = await axios.delete(`${import.meta.env.VITE_API_URL}/myHabits/${_id}`)
+        const res = await axios.delete(`${import.meta.env.VITE_API_URL}/myHabits/${_id}`,
+            {
+                headers: {
+                    Authorization: "Bearer " + token
+                }
+            })
         return res.data
     } catch (error: any) {
-        throw new Error(error.response?.data?.message || "Failed to add habits");
+        throw new Error(error.response?.data?.message || "Failed to delete habits");
 
     }
 }
@@ -59,12 +64,12 @@ export const getOneHabit = async (_id: string) => {
     }
 }
 
-export const updateHabit = async (_id: string, updates:Partial<IHabit>) => {
+export const updateHabit = async (_id: string, updates: Partial<IHabit>) => {
     console.log("on h service");
     console.log("updates", updates, _id);
-    
+
     try {
-        const res = await axios.patch(`${import.meta.env.VITE_API_URL}/myHabits/${_id}`,updates);
+        const res = await axios.patch(`${import.meta.env.VITE_API_URL}/myHabits/${_id}`, updates);
         return res.data;
     } catch (error: any) {
         throw new Error(error.response?.data?.message || "Failed to update a habit");
