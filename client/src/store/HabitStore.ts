@@ -22,7 +22,7 @@ interface HabitState {
     addHabit: (habit: IHabit, token: string) => Promise<void>;
     deleteHabit: (_id: string, token:string) => Promise<void>;
     getOneHabit: (_id: string) => Promise<void>;
-    updateHabit: (_id: string | undefined, updates: Partial<IHabit>) => Promise<void>;
+    updateHabit: (_id: string | undefined, updates: Partial<IHabit>,token:string) => Promise<void>;
 }
 
 
@@ -86,7 +86,7 @@ export const useHabitStore = create<HabitState>((set) => ({
         }
     },
 
-    updateHabit: async (_id: string | undefined, updates: Partial<IHabit>) => {
+    updateHabit: async (_id: string | undefined, updates: Partial<IHabit>,token:string) => {
 
         if (!_id) {
             return;
@@ -94,7 +94,7 @@ export const useHabitStore = create<HabitState>((set) => ({
         set({ loading: true, error: null });
 
         try {
-            const habit = await updateHabit(_id, updates)
+            const habit = await updateHabit(_id, updates,token)
             set(() => ({ habit, loading: false }));
             // console.log("updated habit", habit)
 

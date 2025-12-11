@@ -12,19 +12,13 @@ const OneHabit: React.FC = () => {
 
   const getHabit = () => {
     if (!_id) return;
-
-    getOneHabit(_id)
-
-    if (error) {
-      console.log(error);
-
+    try {
+      getOneHabit(_id)
+    } catch (err) {
+      console.log(err);
     }
-    else if (loading) {
-      console.log("Loading...");
-    }
-   
   }
-  
+
   useEffect(() => {
     getHabit()
   }, [])

@@ -29,12 +29,12 @@
     transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 
-.in{
+.in {
     display: flex;
     flex-direction: column;
     /* justify-content: center;
     align-items: center; */
-    
+
 }
 
 .habit-card:hover {
@@ -67,9 +67,9 @@
 
 }
 
-.habit-title{
+.habit-title {
     margin-bottom: 0%;
-    
+
     padding: 0;
 }
 
@@ -79,12 +79,12 @@
     margin: 8px;
     padding: 5px;
     border-radius: 15px;
-    
+
 }
 
 
 .habit-tags {
-    display: flex;  
+    display: flex;
     gap: 5px;
     height: auto;
     padding: 5px;
@@ -93,7 +93,7 @@
 .habit-tag {
 
     background-color: white;
-    color: #daeb28 ;
+    color: #daeb28;
     font-size: 0.75rem;
     padding: 2px 10px;
     border-radius: 5px;
@@ -117,8 +117,37 @@
     padding: 14px;
     border: 1px solid #e0e0e0;
     margin-top: 10px
-
 }
+
+.some-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+    flex-direction: column;
+    margin-bottom: 10px;
+    font-size: 0.9rem;
+    gap: 5px;
+}
+
+.days-wrapper {
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+    flex-wrap: wrap;
+}
+
+.day{
+    height: auto;
+    width: auto;
+    padding: 5px;
+    border-radius: 5px;
+    border: 1px #daeb28 solid;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 500;
+}
+
 
 
 .habit-divider {

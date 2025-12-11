@@ -4,7 +4,7 @@
 ------------------------------------------------------------------------------*/
 
 import React, { useRef, useEffect } from "react";
-import { Input, Divider, DatePicker, TimePicker, InputNumber, Form, type FormInstance, Button } from "antd";
+import { Input, Divider, DatePicker, TimePicker, InputNumber, Form, type FormInstance, Button, Select, Checkbox, Row, Col } from "antd";
 // import { useHabitStore } from "../../../store/HabitStore";
 import AddHabit_SelectTag from "../AddHabitsComps/AddHabit_SelectTag";
 import styles from './UpdateHabit.module.css'
@@ -21,6 +21,14 @@ const UpdateHabitView: React.FC<UpdateHabitProps> = ({ form, initialValues, onFi
 
     const dateFormat = "YYYY-MM-DD";
     const timeFormat = "HH:mm";
+
+    const frequencyValue = Form.useWatch('frequency', form);
+
+    const numbers = Array.from({ length: 31 }, (_, i) => ({
+        label: `${i + 1}`,
+        value: i + 1,
+    }));
+
 
     const inputRef = useRef(null);
 
@@ -94,17 +102,71 @@ const UpdateHabitView: React.FC<UpdateHabitProps> = ({ form, initialValues, onFi
                 <div className={styles['habit-row']}>
                     <span>Frequency:</span>
                     <Form.Item
-                        name='frequency'
-                        rules={[{ required: true, message: "frequency is required" }]}>
-                        <InputNumber
-                            variant="underlined"
-                            style={{ width: 40, color: "#320988" }}
-                            min={1}
-                            max={30}
-                        />
+                        label=""
+                        name="frequency"
+                        rules={[{ required: true, message: `Frequency is required` }]}
+                    >
+                        <Select variant="underlined" placeholder="Select frequency" className={styles["select"]}
+                            options={[{ label: "Daily", value: "daily" }, { label: "Weekly", value: "weekly" }, { label: "Monthly", value: "monthly" }]} />
                     </Form.Item>
 
                 </div>
+
+                {
+                    frequencyValue === 'weekly' &&
+                    <div className={styles['habit-row']}>
+                        <span>Day of Week</span>
+                        <Form.Item
+                            label=""
+                            name="daysInWeek"
+                            rules={[{ required: true, message: `Please select a day of the week` }]}
+                        >
+                            <Select
+                                variant="underlined"
+                                mode="multiple"
+                                placeholder="Select Day of week"
+
+                                maxTagCount="responsive"
+                                className={styles["select"]}
+                                options={[
+                                    { label: "Sunday", value: 0 },
+                                    { label: "Monday", value: 1 },
+                                    { label: "Tuesday", value: 2 },
+                                    { label: "Wednesday", value: 3 },
+                                    { label: "Thursday", value: 4 },
+                                    { label: "Friday", value: 5 },
+                                    { label: "Saturday", value: 6 },
+
+                                ]} />
+                        </Form.Item>
+                    </div>
+                }
+
+                {
+                    frequencyValue === 'monthly' &&
+                    <div className={styles["habit-row"]}>
+
+                        <Form.Item
+                            label="Day of the Month"
+                            name="daysInMonth"
+                            //help="Select one or more days. if the selected day exceeds the number of days in a month, the habit will be scheduled on the last day of that month."
+                            rules={[{ required: true, message: "Please select at least one day of the month" }]}
+                            style={{ marginBottom: "20px" }}
+                        >
+
+                            <Checkbox.Group style={{ width: '100%' }}>
+                                <Row gutter={[8, 4]}>
+                                    {numbers.map((number) => (
+                                        <Col span={4} key={number.value}>
+                                            <Checkbox value={number.value}>{number.label}</Checkbox>
+                                        </Col>
+                                    ))}
+                                </Row>
+                            </Checkbox.Group>
+                        </Form.Item>
+                    </div>
+                }
+
 
                 {/* time */}
                 <div className={styles['habit-row']}>

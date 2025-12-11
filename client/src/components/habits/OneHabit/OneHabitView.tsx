@@ -4,7 +4,7 @@
  📃 Description : view for one habit
 ------------------------------------------------------------------------------*/
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, type ReactElement, type ReactNode } from "react";
 import { Card, Typography, Tag, Divider } from "antd";
 import { EditOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
@@ -27,12 +27,43 @@ const OneHabitView: React.FC = () => {
         description,
         tag = [],
         frequency,
+        daysInMonth,
+        daysInWeek,
         startDate,
         endDate,
         time,
+
     } = habit
 
+
+    const days = [
+        "Sunday", "Monday","Tuesday","Wednesday", "Thursday","Friday","Saturday"
+    ]
+
     const dateFormat = "YYYY-MM-DD";
+
+    const renderDaysOfMonth = (): React.ReactNode => {
+        if (daysInMonth && daysInMonth.length !== 0) {
+            return daysInMonth.map(day => {
+                return <div className={styles["day"]}>{day}</div>
+            })
+        }
+        else {
+            return <strong>no days</strong>
+        }
+
+    }
+    const renderDaysOfWeek = (): React.ReactNode => {
+        if (daysInWeek && daysInWeek.length !== 0) {
+            return daysInWeek.map(day => {
+                return <div className={styles["day"]}>{days[day]}</div>
+            })
+        }
+        else {
+            return <strong>no days</strong>
+        }
+
+    }
 
     return (
         <>
@@ -90,8 +121,27 @@ const OneHabitView: React.FC = () => {
                                         {/* habit frequency */}
                                         <div className={styles['habit-row']}>
                                             <span>Frequency:</span>
-                                            <strong>{frequency} / week</strong>
+                                            <strong>{frequency}</strong>
                                         </div>
+
+                                        {
+                                            daysInMonth && daysInMonth.length > 0 && daysInMonth !== undefined &&
+                                            <div className={styles['some-wrapper']}>
+                                                <span>Days in Month:</span>
+                                                <div className={styles["days-wrapper"]}>
+                                                    {renderDaysOfMonth()}
+                                                </div>
+                                            </div>
+                                        }
+                                        {
+                                            daysInWeek && daysInWeek.length > 0 && daysInWeek !== undefined &&
+                                            <div className={styles['some-wrapper']}>
+                                                <span>Days in Week:</span>
+                                                <div className={styles["days-wrapper"]}>
+                                                    {renderDaysOfWeek()}
+                                                </div>
+                                            </div>
+                                        }
 
                                         {/* habit time */}
                                         <div className={styles['habit-row']}>

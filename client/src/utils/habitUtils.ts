@@ -1,6 +1,6 @@
 
 
-import { useHabitStore } from "../store/HabitStore"
+// import { useHabitStore } from "../store/HabitStore"
 
 import type { IHabit } from "../types/IHabit"
 
@@ -9,12 +9,14 @@ import type { IHabit } from "../types/IHabit"
 export const datesValidation = (startDate: Date | null | undefined, endDate: Date | null | undefined): { message: string | null } => {
 
     if (startDate && endDate && startDate !== undefined && endDate !== undefined) {
-        if (startDate.getTime() >= endDate.getTime())
+
+
+        if (startDate.valueOf() >= endDate.valueOf())
             return { message: "Start Date must be before End Date" }
 
         const today = new Date()
         today.setHours(0, 0, 0, 0);
-        if (startDate.getTime() < today.getTime())
+        if (startDate.valueOf() < today.valueOf())
             return { message: "Start Date must be at least today" }
     }
 
@@ -23,7 +25,7 @@ export const datesValidation = (startDate: Date | null | undefined, endDate: Dat
 }
 
 // frequency validation
-export const frequencyValidation = (frequency: "daily" | "monthly" | "weekly", daysOfWeek?: number[], daysOfMonth?: number[]): { message: string | null } => {
+export const frequencyValidation = (frequency: " daily" | "weekly" | "monthly", daysOfWeek?: number[], daysOfMonth?: number[]): { message: string | null } => {
     if (frequency === 'weekly') {
         if (daysOfMonth && daysOfMonth.length > 0) {
             return { message: `Days in month should not be provided when frequency is ${frequency || 'other'}` }
@@ -55,6 +57,13 @@ export const frequencyValidation = (frequency: "daily" | "monthly" | "weekly", d
     return { message: null }
 }
 
+export const frequencyValidationForUpdate = (currentHabit: IHabit, frequency: " daily" | "weekly" | "monthly", daysOfWeek?: number[], daysOfMonth?: number[]): { message: string | null } => {
+
+    if (currentHabit.frequency !== frequency && frequency) {
+        return frequencyValidation(frequency, daysOfWeek, daysOfMonth)
+    }
+    return { message: null }
+}
 // filter updated object from undefined fields and idential values
 // const filterUpdatedObject = ( updates: Partial<IHabit>): Partial<IHabit> => {
 //     const { habit } = useHabitStore()

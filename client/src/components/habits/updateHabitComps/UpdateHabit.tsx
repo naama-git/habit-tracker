@@ -8,6 +8,7 @@ import dayjs from 'dayjs'
 import type { IHabit } from '../../../types/IHabit'
 import { useHabitContext } from '../../../context/HabitContext'
 import { useMessageContext } from '../../../context/MessageContext'
+import { frequencyValidationForUpdate } from '../../../utils/habitUtils'
 
 
 interface UpdateHabitProps {
@@ -18,7 +19,7 @@ interface UpdateHabitProps {
 const UpdateHabit: React.FC<UpdateHabitProps> = ({ onEditMode, setOnEditMode }) => {
 
   const [form] = Form.useForm();
-  const {openMessage}=useMessageContext()
+  const { openMessage } = useMessageContext()
   const { habit, updateHabit } = useHabitStore()
   const { userTags } = useHabitContext()
 
@@ -29,6 +30,8 @@ const UpdateHabit: React.FC<UpdateHabitProps> = ({ onEditMode, setOnEditMode }) 
     habitName: habit.habitName,
     description: habit.description,
     frequency: habit.frequency,
+    daysInWeek: habit.daysInWeek,
+    daysInMonth: habit.daysInMonth,
     startDate: habit.startDate ? dayjs(habit.startDate, dateFormat) : null,
     endDate: habit.endDate ? dayjs(habit.endDate, dateFormat) : null,
     time: habit.time ? dayjs(habit.time, timeFormat) : null
@@ -38,12 +41,26 @@ const UpdateHabit: React.FC<UpdateHabitProps> = ({ onEditMode, setOnEditMode }) 
   // onFinish - update habit
   const onFinish = (values: IHabit) => {
     values.time = dayjs(values.time).format('HH:mm')
-    console.log(userTags);
     values.tag = userTags;
-    updateHabit(habit._id, values)
-    openMessage("success", "Habit Updated Successfully")
-    setOnEditMode();
+    let message: { message: String | null }
+    message = frequencyValidationForUpdate(habit, values.frequency, values.daysInWeek, values.daysInMonth)
+    if (message.message) {
+      openMessage("error", message.message)
+      return;
+    }
+    const token = localStorage.getItem('token')
+    if (!token) {
+      openMessage("error", "please log in first")
+      return
+    }
+    try {
+      updateHabit(habit._id, values, token)
+      openMessage("success", "Habit Updated Successfully")
+      setOnEditMode();
+    } catch (error) {
+      console.log(error);
 
+    }
   }
 
   return (
@@ -63,7 +80,7 @@ const UpdateHabit: React.FC<UpdateHabitProps> = ({ onEditMode, setOnEditMode }) 
             initialValues={initialFormValues}
             onFinish={onFinish}
           />
-         
+
         </div>
       }
     </>
