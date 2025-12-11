@@ -1,4 +1,4 @@
-import e from 'express';
+
 import mongoose, { InferSchemaType } from 'mongoose';
 const userSchema = new mongoose.Schema({
     userName: {

@@ -81,8 +81,8 @@ habitSchema.pre('save', function (next) {
         doc.daysInWeek = undefined;
     }
     else {
-        doc.daysInweek = undefined;
-        doc.daysInmonth = undefined;
+        doc.daysInWeek = undefined;
+        doc.daysInMonth = undefined;
     }
 
     next();

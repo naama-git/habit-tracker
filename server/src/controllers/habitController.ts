@@ -3,19 +3,20 @@
 import { Request, Response } from "express";
 import Habit from '../models/Habit'
 import HabitLog from '../models/HabitLog'
-import { log } from "node:console";
+import { IHabit } from '../Interfaces/HabitType'
+import { IUser } from "../Interfaces/UserType";
 
 
 
 //get all habits
 const getHabits = async (req: Request, res: Response) => {
 
-    const user = req.user
-    if (!user) {
+    const user: IUser | undefined = req.user
+    if (!user||user===undefined) {
         return res.status(401).json({ message: 'Unauthorized' })
     }
-    let habits = []
-    habits = await Habit.find({ userId: user._id }).lean()
+    let habits: IHabit[] = []
+    habits = await Habit.find({ userId: user._id }).lean() as unknown as IHabit[];
 
     // if (!habits || habits.length === 0) {
     //     return res.status(404).json({ message: "No habits found", habits: [] })
@@ -35,9 +36,9 @@ const getHabitById = async (req: Request, res: Response) => {
 
 //create a new habit
 const createHabit = async (req: Request, res: Response) => {
-    const user = req.user
+    const user: IUser | undefined = req.user
 
-    if (!user) {
+    if (!user||user===undefined) {
         return res.status(401).json({ message: 'Unauthorized' })
     }
     const { habitName, description, tag, frequency, daysInMonth, daysInWeek, startDate, endDate, time } = req.body
@@ -53,7 +54,7 @@ const createHabit = async (req: Request, res: Response) => {
 
     let habit = {}
     if (frequency === "monthly") {
-        habit = await Habit.create({ habitName, description, tag, frequency: frequency.toLowerCase(), daysInMonth, startDate: sendStartDate, endDate, time, userId: user._id })
+        habit  = await Habit.create({ habitName, description, tag, frequency: frequency.toLowerCase(), daysInMonth, startDate: sendStartDate, endDate, time, userId: user._id }) 
     }
     else if (frequency === "weekly") {
         habit = await Habit.create({ habitName, description, tag, frequency: frequency.toLowerCase(), daysInWeek, startDate: sendStartDate, endDate, time, userId: user._id })
@@ -116,7 +117,7 @@ const updateHabit = async (req: Request, res: Response) => {
 }
 
 //update a habit partially
-// This allows updating only specific fields without requiring all fields to be present
+
 const updatePartialHabit = async (req: Request, res: Response) => {
 
     const { _id } = req.params
@@ -131,14 +132,14 @@ const updatePartialHabit = async (req: Request, res: Response) => {
         return res.status(400).send({ message: "Body cannot be empty or contain only undefined values." });
     }
 
-    //טעון בירור
     const habit = await Habit.findById(_id).exec()
     if (!habit) {
         return res.status(404).json({ message: "Habit not found" })
     }
 
-    Object.keys(updates).forEach((key)=>{
-        habit[key]=updates[key]//fix
+    //update fields
+    (Object.keys(updates) as Array<keyof IHabit>).forEach((key) => {
+        habit[key] = (updates as any)[key];
     })
 
     const updatedHabit = await habit.save()
