@@ -60,14 +60,21 @@ export const habitValidation = [
 
   body('time').notEmpty().withMessage('Time is required'),
   body('time').matches(/^([01]\d|2[0-3]):([0-5]\d)$/).withMessage('Time must be in HH:mm format'),
-  body('startDate').optional({ nullable: true }).isISO8601().withMessage('Start date must be a valid date'),
+  body('startDate').optional({ nullable: true }).isDate().withMessage('Start date must be a valid date'),
   body('startDate').optional({ nullable: true }).custom((value, { req }) => {
-    if (value && req.body.endDate && new Date(value) > new Date(req.body.endDate)) {
-      throw new Error('Start date must be before end date');
+    const dateValue = new Date(value)
+    if (dateValue >= new Date()) {
+      if (value && req.body.endDate && new Date(value) > new Date(req.body.endDate)) {
+        throw new Error('Start date must be before end date');
+      }
     }
+    else {
+      throw new Error('Start date must at least today');
+    }
+
     return true
-  }).withMessage('Start date must be before end date'),
-  body('endDate').optional({ nullable: true }).isISO8601().withMessage('End date must be a valid date'),
+  }),
+  body('endDate').optional({ nullable: true }).isDate().withMessage('End date must be a valid date'),
 
 ];
 
@@ -133,46 +140,48 @@ export const partialHabitVaildation = [
     })
   ,
   body('time').optional().matches(/^([01]\d|2[0-3]):([0-5]\d)$/).withMessage('Time must be in HH:mm format'),
-  body('startDate').optional({ nullable: true }).isISO8601().withMessage('Start date must be a valid date'),
-  body('startDate').optional({ nullable: true }).isISO8601().withMessage('Start date must be a valid ISO 8601 date format').toDate(),
-  body('endDate').optional({ nullable: true }).isISO8601().withMessage('End date must be a valid ISO 8601 date format').toDate(),
+  body('startDate').optional({ nullable: true }).isDate().withMessage('Start date must be a valid date').toDate(),
+  body('endDate').optional({ nullable: true }).isDate().withMessage('End date must be a valid date').toDate(),
   body('startDate')
-    .custom(async (newStartDate, { req }) => {
-      const currentHabit = req.currentHabit;
-      let relevantEndDate = req.body.endDate;
-      if (!relevantEndDate) {
-        if (currentHabit && currentHabit.endDate) {
-          relevantEndDate = currentHabit.endDate;
+    .custom((newStartDate, { req }) => {
+      if (!newStartDate) return true
+      const dateValue = new Date(newStartDate)
+      if (dateValue >= new Date()) {
+        const currentHabit = req.currentHabit;
+        let relevantEndDate = req.body.endDate;
+        if (!relevantEndDate) {//if the user didnt update the end date
+          if (currentHabit && currentHabit.endDate) {//if there is end date in current habit
+            relevantEndDate = currentHabit.endDate;
+          }
         }
-      }
-      if (newStartDate && relevantEndDate instanceof Date) {
-        if (newStartDate.getTime() > relevantEndDate.getTime()) {
+        if (dateValue.getTime() >= relevantEndDate.getTime()) {
           throw new Error('Start date must be before end date (Current End Date: ' + relevantEndDate.toISOString().split('T')[0] + ')');
         }
-      }
 
+      }
+      else {
+        throw new Error('Start date must at least today');
+      }
       return true;
     }),
 
   body('endDate')
-    .custom(async (newEndDate, { req }) => {
-      const { _id } = req.params;
-      let relevantStartDate = req.body.startDate;
+    .custom((newEndDate, { req }) => {
+      if (!newEndDate) return true
+      const dateValue = new Date(newEndDate)
+      const currentHabit = req.currentHabit;
+      let relevantStartDate = req.body.startDate
       if (!relevantStartDate) {
-        const existingHabit = await Habit.findById(_id).select('startDate');
-        if (existingHabit && existingHabit.startDate) {
-          relevantStartDate = existingHabit.startDate;
+        if (currentHabit && currentHabit.startDate) {//always
+          relevantStartDate = currentHabit.startDate;
         }
       }
-      if (newEndDate && relevantStartDate instanceof Date) {
-        if (newEndDate.getTime() < relevantStartDate.getTime()) {
-          throw new Error('Start date must be before end date (Current Start Date: ' + relevantStartDate.toISOString().split('T')[0] + ')');
-        }
+      if (dateValue.getTime() < relevantStartDate.getTime()) {
+        throw new Error('Start date must be before end date (Current Start Date: ' + relevantStartDate.toISOString().split('T')[0] + ')');
       }
       return true;
     }),
 ]
-
 
 
 
