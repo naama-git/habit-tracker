@@ -15,9 +15,9 @@ const signin = async (req: Request, res: Response) => {
 
     const createdUser = await User.create({ userName, email, password: hashedPwd })
     if (!createdUser) {
-        return res.status(500).json({ massage: "Could not create user" })
+        return res.status(500).json({ message: "Could not create user" })
     }
-    return res.status(201).json({ massage: "User created successfully", user: createdUser })
+    return res.status(201).json({ message: "User created successfully", user: createdUser })
 }
 
 
@@ -27,17 +27,17 @@ const login = async (req: Request, res: Response) => {
 
     //validate input
     if (!userName || !password) {
-        return res.status(401).json({ massage: "UserName and password are required fields" })
+        return res.status(401).json({ message: "UserName and password are required fields" })
     }
 
     const user = await User.findOne({ userName }).lean()
     if (!user) {
-        return res.status(404).json({ massage: "Invalid user1" })
+        return res.status(404).json({ message: "Invalid user1" })
     }
     const match = await bcrypt.compare(password, user.password)
     
     if (!match) {
-        return res.status(401).json({ massage: "Invalid user" })
+        return res.status(401).json({ message: "Invalid user" })
     }
 
     const secret = process.env.ACCESS_TOKEN_SECRET
