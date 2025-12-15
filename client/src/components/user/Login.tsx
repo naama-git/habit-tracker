@@ -4,12 +4,14 @@
  📃 Description : Login form component
 ------------------------------------------------------------------------------*/
 
-import { Form, Input, Button } from "antd";
-import { EyeInvisibleOutlined, EyeTwoTone } from "@ant-design/icons";
-import { useState } from "react";
+import { Form, Input, Button, Spin } from "antd";
+import { EyeInvisibleOutlined, EyeTwoTone, LoadingOutlined } from "@ant-design/icons";
+import { useEffect, useState } from "react";
 import type { IUser } from "../../types/IUser";
 import { useUserStore } from "../../store/UserStore";
 import { useMessageContext } from "../../context/MessageContext";
+import { useNotificationContext } from "../../context/NotificationContext";
+import { useShallow } from 'zustand/shallow'
 
 const Login: React.FC = () => {
 
@@ -19,24 +21,27 @@ const Login: React.FC = () => {
   //------ Types ------
   type loginIUser = Pick<IUser, 'userName' | 'password'>;
 
-  const { login } = useUserStore()
+  const { login, clearError } = useUserStore()
+  const { error, loading, currentUser } = useUserStore(
+    useShallow(
+      (state) => ({
+        error: state.error,
+        loading: state.loading,
+        currentUser: state.currentUser
+      })
+    )
+  )
 
 
+  const { openNotification } = useNotificationContext()
   const [disable, setDisable] = useState<boolean>(true)
   const { openMessage } = useMessageContext()
 
+
   const sendUserData = (user: loginIUser | null) => {
 
-    if (!user) return;
-
-    try {
-      login(user)
-      openMessage("success", user.userName + ", you logged in successfully")
-      resetFields();
-    } catch (err) {
-      console.log(err);
-
-    }
+    if (!user) return
+    login(user)
   }
 
   const resetFields = () => {
@@ -55,6 +60,23 @@ const Login: React.FC = () => {
   const onValuesChange = (_: any, allValues: any) => {
     setDisable(requiredFieldsValidation(allValues));
   }
+
+  useEffect(() => {
+    if (error.message && !error.errors) {
+      openNotification("error", error.message, null, error.status)
+      clearError()
+    }
+    else if (error.errors && error.errors.length > 0) {
+      const description = error.errors.map(err => err.msg).join("\n")
+      openNotification("error", error.message, description, error.status)
+      clearError()
+    }
+
+    if (currentUser?.userName) {
+      openMessage("success", `${currentUser.userName}, you logged in successfully`)
+      resetFields()
+    }
+  }, [currentUser, error])
 
 
   return (
@@ -100,7 +122,11 @@ const Login: React.FC = () => {
 
 
           >
-            Log In
+            {
+              loading ?
+                <><Spin indicator={<LoadingOutlined spin />} /></> : <>Sign In</>
+            }
+
           </Button>
         </Form.Item>
 

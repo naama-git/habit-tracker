@@ -4,34 +4,38 @@
  📃 Description : Sign up form component
 ------------------------------------------------------------------------------*/
 
-import { Form, Input, Button } from "antd";
-import { EyeInvisibleOutlined, EyeTwoTone } from "@ant-design/icons";
-import { useState } from "react";
+import { Form, Input, Button, Spin } from "antd";
+import { EyeInvisibleOutlined, EyeTwoTone, LoadingOutlined } from "@ant-design/icons";
+import { useEffect, useState } from "react";
 import type { IUser } from "../../types/IUser";
 import { useUserStore } from "../../store/UserStore";
 import { useMessageContext } from "../../context/MessageContext";
+import { useNotificationContext } from "../../context/NotificationContext";
+import { useShallow } from "zustand/shallow";
 
 
 const SignUp: React.FC = () => {
 
   const [form] = Form.useForm();
-  const { signUp } = useUserStore();
+
+  const { signUp, clearError } = useUserStore()
+  const { error, loading, currentUser } = useUserStore(
+    useShallow(
+      (state) => ({
+        error: state.error,
+        loading: state.loading,
+        currentUser: state.currentUser
+      })
+    )
+  )
   const [disable, setDisable] = useState<boolean>(true)
   const { openMessage } = useMessageContext()
+  const { openNotification } = useNotificationContext()
 
-  const sendUserData = async (user: IUser | null) => {
+  // send user data to server
+  const sendUserData = (user: IUser | null) => {
     if (!user) return;
-
-    try {
-      signUp(user)
-      openMessage("success", user.userName + ", you signed in successfully!")
-      resetFields();
-
-    } catch (err) {
-      console.log(err);
-
-    }
-
+    signUp(user)
   }
 
   const resetFields = () => {
@@ -51,6 +55,23 @@ const SignUp: React.FC = () => {
   const onValuesChange = (_: any, allValues: any) => {
     setDisable(requiredFieldsValidation(allValues));
   }
+
+  useEffect(() => {
+    if (error.message && !error.errors) {
+      openNotification("error", error.message, null, error.status)
+      clearError()
+    }
+    else if (error.errors && error.errors.length > 0) {
+      const description = error.errors.map(err => err.msg).join("\n")
+      openNotification("error", error.message, description, error.status)
+      clearError()
+    }
+
+    if (currentUser?.userName) {
+      openMessage("success", `${currentUser.userName}, you logged in successfully`)
+      resetFields()
+    }
+  }, [currentUser, error])
 
   return (
     <>
@@ -73,7 +94,7 @@ const SignUp: React.FC = () => {
           rules={[{ required: true, message: 'Please input your name!' }]}
         >
           <Input
-            placeholder="Enter your name" 
+            placeholder="Enter your name"
             size="large"
             autoComplete="current-name"
           />
@@ -114,7 +135,10 @@ const SignUp: React.FC = () => {
           disabled={disable}
         >
 
-          Sign in
+          {
+            loading ?
+             <><Spin indicator={<LoadingOutlined spin />}/></>:<>Sign In</>
+          }
         </Button>
       </Form>
     </>
