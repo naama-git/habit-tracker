@@ -7,22 +7,63 @@ import type { IHabit } from "../types/IHabit"
 
 // date validation
 export const datesValidation = (startDate: Date | null | undefined, endDate: Date | null | undefined): { message: string | null } => {
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
 
-    if (startDate && endDate && startDate !== undefined && endDate !== undefined) {
+    if (startDate) {
+        const startDateValue = new Date(startDate)
+        startDateValue.setHours(0, 0, 0, 0)
+        if (startDateValue < today)
+            return { message: "Start Date must be at least today" }
+    }
+    else if (endDate && (!startDate || startDate == undefined || startDate === null)) {
 
+        const endDateValue = new Date(endDate)
+        endDateValue.setHours(0, 0, 0, 0)
+        if (endDateValue <= today) {
+            return { message: "End Date must be before Start Date " }
+        }
+    }
 
+    if (startDate && endDate) {
         if (startDate.valueOf() >= endDate.valueOf())
             return { message: "Start Date must be before End Date" }
+    }
+    return { message: null };
+}
 
-        const today = new Date()
-        today.setHours(0, 0, 0, 0);
-        if (startDate.valueOf() < today.valueOf())
-            return { message: "Start Date must be at least today" }
+
+type DateType = Date | string | null | undefined;
+
+const getMidnightDate = (dateInput: DateType): Date | null => {
+    if (!dateInput) return null;
+    const date = new Date(dateInput);
+    if (isNaN(date.getTime())) return null;
+
+    date.setHours(0, 0, 0, 0);
+    return date;
+};
+
+
+export const validateDatesForUpdate = (
+    newValues: { startDate?: DateType, endDate?: DateType },
+    currentData: { startDate?: DateType, endDate?: DateType }
+): { message: string | null } => {
+
+    const rawStartDate = newValues.startDate ?? currentData.startDate;
+    const rawEndDate = newValues.endDate ?? currentData.endDate;
+
+    const startDate = getMidnightDate(rawStartDate);
+    const endDate = getMidnightDate(rawEndDate);
+
+    if (startDate && endDate) {
+        if (endDate <= startDate) {
+            return { message: "End Date must be after Start Date" };
+        }
     }
 
     return { message: null };
-
-}
+};
 
 // frequency validation
 export const frequencyValidation = (frequency: " daily" | "weekly" | "monthly", daysOfWeek?: number[], daysOfMonth?: number[]): { message: string | null } => {

@@ -13,9 +13,6 @@ const verifyJWT = async (req: Request, res: Response, next: NextFunction) => {
     }
 
     const token = authHeader.toString().split(' ')[1]
-    // console.log("token", token);
-
-
     if (!token || token == null) {
         return res.status(401).json({ message: 'Invalid2' })
     }

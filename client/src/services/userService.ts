@@ -17,7 +17,6 @@ export const signUp = async (user: IUser) => {
 export const login = async (user: IUser) => {
     try {
         const res = await axios.post(`${import.meta.env.VITE_API_URL}/user/login`, user);
-        
         return res.data
 
     } catch (error: any) {

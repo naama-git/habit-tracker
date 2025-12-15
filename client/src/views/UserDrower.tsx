@@ -9,6 +9,7 @@ import { Drawer, Card, Tabs } from "antd"
 import Login from '../components/user/Login';
 import SignUp from '../components/user/SignUp';
 
+
 /**
  * params:
  * visible: boolean - determines if the drawer is visible
@@ -19,17 +20,40 @@ const UserDrower: React.FC<{ visible: boolean, onClose: () => void }> = ({ visib
 
     //----- 🎨State to manage active tab -----
     const [activeTab, setActiveTab] = useState("1");
+    // 1. הגדרת המערך (בדרך כלל מחוץ ל-return, או כקבוע)
+    const items = [
+        {
+            key: '1',
+            label: "Sign in",
+            children: (
+                <SignUp />
+            ),
+        },
+        {
+            key: '2',
+            label: "Log in",
+            children: (
+               <Login/>
+            ),
+        },
+    ];
+
+    // 2. שימוש ברכיב Tabs
+    <Tabs
+        defaultActiveKey="1"
+        items={items} // מעבירים את המערך למאפיין items
+    />
 
     return (
         <div>
-        {/*  DrawerSettings */}
+            {/*  DrawerSettings */}
             <Drawer
                 title="User"
                 placement="right"
                 onClose={onClose}
                 open={visible}
                 maskClosable={true}
-                style={{  fontWeight: "bold" }}
+                style={{ fontWeight: "bold" }}
                 styles={{ header: { padding: "40px", borderBottom: "1px solid #daeb28" } }}
             >
 
@@ -42,20 +66,8 @@ const UserDrower: React.FC<{ visible: boolean, onClose: () => void }> = ({ visib
                         activeKey={activeTab}
                         onChange={key => setActiveTab(key)}
                         type="card"
+                        items={items}
                     >
-                        {/* signup tab */}
-                        <Tabs.TabPane tab="Sign Up" key="1">
-                            <SignUp />
-                        </Tabs.TabPane>
-
-                        {/* login tab */}
-                        <Tabs.TabPane tab="Login" key="2">
-                            <Login />
-
-                            {/* if user is not registered, show link to sign up */}
-                            <a onClick={() => setActiveTab("1")} >Not registered Yet?</a>
-
-                        </Tabs.TabPane>
                     </Tabs>
 
                 </Card>

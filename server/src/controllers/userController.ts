@@ -12,7 +12,6 @@ const signin = async (req: Request, res: Response) => {
     const { userName, email, password } = req.body
 
     const hashedPwd = await bcrypt.hash(password, 10)
-    console.log({ userName, email, password: hashedPwd });
 
     const createdUser = await User.create({ userName, email, password: hashedPwd })
     if (!createdUser) {
@@ -25,7 +24,6 @@ const signin = async (req: Request, res: Response) => {
 //login controller
 const login = async (req: Request, res: Response) => {
     const { userName, password } = req.body
-    // console.log("in");
 
     //validate input
     if (!userName || !password) {

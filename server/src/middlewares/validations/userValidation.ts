@@ -2,7 +2,7 @@ import { body, validationResult } from 'express-validator';
 import { Request, Response, NextFunction } from 'express'
 import User from '../../models/User';
 
-// וולידציה לשדות
+
 export const userValidation = [
   body('userName').notEmpty().withMessage('UserName is required'),
   body('email').notEmpty().withMessage('Email is required'),
@@ -17,7 +17,7 @@ export const userValidation = [
  
 ];
 
-// middleware שמחזיר שגיאות אם יש
+
 export const validateRequest = (req: Request, res: Response, next: NextFunction) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {

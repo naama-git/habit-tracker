@@ -200,10 +200,11 @@ const UpdateHabitView: React.FC<UpdateHabitProps> = ({ form, initialValues, onFi
                 </div>
 
                 {/* end date*/}
-                <div className={styles['habit-row']}>
+                <div className={styles['habit-row']} >
                     <span>End:</span>
                     <Form.Item
-                        name="endDate">
+                        name="endDate"
+                        required={false}>
                         <DatePicker
                             format={dateFormat}
                             variant="underlined"

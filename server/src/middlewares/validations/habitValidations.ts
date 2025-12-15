@@ -60,10 +60,12 @@ export const habitValidation = [
 
   body('time').notEmpty().withMessage('Time is required'),
   body('time').matches(/^([01]\d|2[0-3]):([0-5]\d)$/).withMessage('Time must be in HH:mm format'),
-  body('startDate').optional({ nullable: true }).isDate().withMessage('Start date must be a valid date'),
+  body('startDate').optional({ nullable: true }).isISO8601().withMessage('Start date must be a valid date').toDate(),
   body('startDate').optional({ nullable: true }).custom((value, { req }) => {
     const dateValue = new Date(value)
-    if (dateValue >= new Date()) {
+    let today = new Date()
+    today.setHours(0, 0, 0, 0)
+    if (dateValue >= today) {
       if (value && req.body.endDate && new Date(value) > new Date(req.body.endDate)) {
         throw new Error('Start date must be before end date');
       }
@@ -74,7 +76,7 @@ export const habitValidation = [
 
     return true
   }),
-  body('endDate').optional({ nullable: true }).isDate().withMessage('End date must be a valid date'),
+  body('endDate').optional({ nullable: true }).isISO8601().withMessage('End date must be a valid date').toDate(),
 
 ];
 
@@ -140,13 +142,16 @@ export const partialHabitVaildation = [
     })
   ,
   body('time').optional().matches(/^([01]\d|2[0-3]):([0-5]\d)$/).withMessage('Time must be in HH:mm format'),
-  body('startDate').optional({ nullable: true }).isDate().withMessage('Start date must be a valid date').toDate(),
-  body('endDate').optional({ nullable: true }).isDate().withMessage('End date must be a valid date').toDate(),
+  body('startDate').optional({ nullable: true }).isISO8601().withMessage('Start date must be a valid date').toDate(),
+  body('endDate').optional({ nullable: true }).isISO8601().withMessage('End date must be a valid date').toDate(),
   body('startDate')
     .custom((newStartDate, { req }) => {
       if (!newStartDate) return true
       const dateValue = new Date(newStartDate)
-      if (dateValue >= new Date()) {
+      
+      // let today = new Date()
+      // today.setHours(0, 0, 0, 0)
+      // if (dateValue >= today) {
         const currentHabit = req.currentHabit;
         let relevantEndDate = req.body.endDate;
         if (!relevantEndDate) {//if the user didnt update the end date
@@ -158,10 +163,10 @@ export const partialHabitVaildation = [
           throw new Error('Start date must be before end date (Current End Date: ' + relevantEndDate.toISOString().split('T')[0] + ')');
         }
 
-      }
-      else {
-        throw new Error('Start date must at least today');
-      }
+      // }
+      // else {
+      //   throw new Error('Start date must at least today');
+      // }
       return true;
     }),
 

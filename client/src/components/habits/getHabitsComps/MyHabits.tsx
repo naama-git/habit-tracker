@@ -7,19 +7,28 @@
 import React, { useEffect } from 'react'
 import GetHabitsView from './GetHabitsView'
 import { useHabitStore } from '../../../store/HabitStore'
+import { useMessageContext } from '../../../context/MessageContext';
 
 const MyHabits: React.FC = () => {
 
   // ----- state for user habits -----
-  const { habits,  error, getHabits } = useHabitStore();
-  
+  const { habits, error, getHabits } = useHabitStore();
 
-  const getData = async () => {
+  const { openMessage } = useMessageContext()
+
+  const getData = () => {
     const token = localStorage.getItem('token')
     if (!token) {
-      return; //add notification
+      openMessage("error", "please log in first")
+      return
     }
-    await getHabits(token)
+    try {
+      getHabits(token)
+    } catch (err) {
+      console.log(err);
+
+    }
+
 
     if (error) {
       console.log(error);

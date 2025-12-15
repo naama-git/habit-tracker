@@ -59,14 +59,13 @@ const AddHabit: React.FC = () => {
         return true
     }
 
-    
+
     const onValuesChange = (_: any, allValues: any) => {
         setDisabled(requiredFieldsValidation(allValues));
     }
-    
+  
     const onFinish = (values: any) => {
 
-        form.resetFields()
 
         let message: { message: String | null }
 
@@ -81,19 +80,29 @@ const AddHabit: React.FC = () => {
             openMessage("error", message.message)
             return;
         }
+        form.resetFields()
 
+        let today=new Date()
+        today.setHours(0,0,0,0)
         let habit = {
             habitName: values.habitName,
             description: values.description,
             frequency: values.frequency,
             daysInMonth: values.daysInMonth,
             daysInWeek: values.daysInWeek,
-            startDate: values.dateRange?.[0] ? values.dateRange[0].toDate() : new Date(),
-            endDate: values.dateRange?.[1] ? values.dateRange[1].toDate() : undefined,
+            startDate: values.dateRange?.[0] ? new Date(values.dateRange[0].format("YYYY-MM-DD")) : today,
+            endDate: values.dateRange?.[1] ? new Date(values.dateRange[1].format("YYYY-MM-DD")) : undefined,
             time: dayjs(values.time).format('HH:mm').toString(),
             tag: userTags
         }
-        sendHabit(habit as IHabit)
+        try {
+            console.log(habit);
+
+            sendHabit(habit as IHabit)
+        } catch (err) {
+            openMessage("error", err)
+        }
+
 
     }
 

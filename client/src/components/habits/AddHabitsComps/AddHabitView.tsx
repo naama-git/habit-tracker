@@ -150,6 +150,7 @@ const AddHabitView: React.FC<AddHabitViewProps> = ({ form, onFinish, open, onCan
           <Form.Item
             label="Start and End Dates"
             name="dateRange"
+            help="If no start date is selected, the current day will be selected by default."
           >
             <DatePicker.RangePicker
               placeholder={['Start Date', 'End Date']}
