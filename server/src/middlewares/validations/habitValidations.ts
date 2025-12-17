@@ -1,7 +1,5 @@
 import { body, validationResult } from 'express-validator';
 import { Request, Response, NextFunction } from 'express'
-import Habit from '../../models/Habit';
-
 
 // validation for creating a habit
 export const habitValidation = [
