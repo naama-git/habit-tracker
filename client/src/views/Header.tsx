@@ -15,17 +15,14 @@ import UserDrower from "./UserDrower"
 
 const Header: React.FC = () => {
 
-  //-----🎨 Responsive design -----
   const screens = useBreakpoint();
   const isMobile = screens.md === false;
 
-  // ----- 🎨 State to manage drawer visibility -----
   const [drawerOpen, setDrawerOpen] = useState(false);
 
-  // ----- 🎨 State to manage user drawer visibility -----
   const [showUserDrawer, setShowUserDrawer] = useState(false)
+  const token = localStorage.getItem('token')
 
-  //------ 🎨 Menu Items ------
   const menuItems = [
     {
       key: "homePage", label: <a href="/" style={{ height: "100%", display: "flex", alignItems: "center" }}>
@@ -33,7 +30,7 @@ const Header: React.FC = () => {
       </a>
     },
     { key: "about", label: <a>About</a>, },
-    { key: "myHabits", label: <a href="/myHabits"> My Habits</a> },
+    { key: "myHabits", label: <a href="/myHabits" > My Habits</a> },
     {
       key: "user",
       label:

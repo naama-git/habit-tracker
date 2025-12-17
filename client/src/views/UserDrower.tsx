@@ -18,30 +18,30 @@ import SignUp from '../components/user/SignUp';
 
 const UserDrower: React.FC<{ visible: boolean, onClose: () => void }> = ({ visible, onClose }) => {
 
-    //----- 🎨State to manage active tab -----
     const [activeTab, setActiveTab] = useState("1");
-    // 1. הגדרת המערך (בדרך כלל מחוץ ל-return, או כקבוע)
+
     const items = [
         {
             key: '1',
+            label: "Log In",
+            children: (
+
+                <Login />
+            ),
+        },
+        {
+            key: '2',
             label: "Sign in",
             children: (
                 <SignUp />
             ),
         },
-        {
-            key: '2',
-            label: "Log in",
-            children: (
-               <Login/>
-            ),
-        },
     ];
 
-    // 2. שימוש ברכיב Tabs
+
     <Tabs
         defaultActiveKey="1"
-        items={items} // מעבירים את המערך למאפיין items
+        items={items}
     />
 
     return (
@@ -49,11 +49,10 @@ const UserDrower: React.FC<{ visible: boolean, onClose: () => void }> = ({ visib
             {/*  DrawerSettings */}
             <Drawer
                 title="User"
-                placement="right"
                 onClose={onClose}
                 open={visible}
-                maskClosable={true}
-                style={{ fontWeight: "bold" }}
+                // maskClosable={true}
+                // style={{ fontWeight: "bold" }}
                 styles={{ header: { padding: "40px", borderBottom: "1px solid #daeb28" } }}
             >
 
@@ -68,7 +67,12 @@ const UserDrower: React.FC<{ visible: boolean, onClose: () => void }> = ({ visib
                         type="card"
                         items={items}
                     >
+
                     </Tabs>
+                    {
+                        activeTab === "1" &&
+                        <a onClick={() => setActiveTab("2")}>Not registered yet? </a>
+                    }
 
                 </Card>
 

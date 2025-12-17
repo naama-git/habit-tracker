@@ -153,12 +153,12 @@ const updatePartialHabit = async (req: Request, res: Response) => {
 
 //mark habit as done
 const habitDone = async (req: Request, res: Response) => {
-    // const { id } = req.params
-    const { habitId, logDate, done } = req.body
-    if (!habitId || !logDate) {
+    const { _id } = req.params
+    const { logDate, done } = req.body
+    if (!_id || !logDate) {
         return res.status(400).json({ message: "HabitId and logDate are required" })
     }
-    const habitLog = await HabitLog.create({ habitId, logDate, done })
+    const habitLog = await HabitLog.create({habitId:_id, logDate, done })
     if (!habitLog) {
         return res.status(500).json({ message: "Failed to log habit" })
     }

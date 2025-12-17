@@ -6,7 +6,7 @@ const NotificationContext = createContext<any>(null)
 
 export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 
-    const [api, contextHolder] = notification.useNotification();
+    const [api, notificationContextHolder] = notification.useNotification();
 
     const statusArr: { status: number, message: string, description?: string }[] = [
         {
@@ -73,7 +73,7 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
     }
 
     return (
-        <NotificationContext.Provider value={{ openNotification, contextHolder }}>
+        <NotificationContext.Provider value={{ openNotification, notificationContextHolder  }}>
             {children}
         </NotificationContext.Provider>
     )

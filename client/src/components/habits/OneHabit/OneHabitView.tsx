@@ -4,23 +4,24 @@
  📃 Description : view for one habit
 ------------------------------------------------------------------------------*/
 
-import React, { useEffect, useState, type ReactElement, type ReactNode } from "react";
+import React, {  useState } from "react";
 import { Card, Typography, Tag, Divider } from "antd";
 import { EditOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
 import styles from './OneHabit.module.css'
 import UpdateHabit from "../updateHabitComps/UpdateHabit";
-import { useHabitStore } from "../../../store/HabitStore";
+import type { IHabit } from "../../../types/IHabit";
 
 const { Text } = Typography;
 
+interface OneHabitViewProps {
+    habit:IHabit
+}
 
-const OneHabitView: React.FC = () => {
+const OneHabitView: React.FC<OneHabitViewProps> = ({habit}) => {
 
     // boolean state for edit mode
     const [onEditMode, setOnEditMode] = useState(false)
-
-    const { habit } = useHabitStore();
 
     const {
         habitName,

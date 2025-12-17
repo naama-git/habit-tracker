@@ -2,10 +2,32 @@
 // sends data to server in axios req & res
 
 
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import type { IHabit } from "../types/IHabit";
+import type { IError } from "../types/IError";
 
+const handlingErrors = (err: any, type: string) => {
 
+    if (axios.isAxiosError(err)) {
+        const error = err as AxiosError<IError>
+        if (error.response) {
+            if (error.response.data.errors) {
+                console.log(error.response.data.errors);
+                throw ({ errors: error.response.data.errors })
+            }
+            console.log(error.response.data.message)
+            throw { message: error.response.data.message, status: error.response.data.status }
+        }
+        else if (error.request) {
+            console.log("Error request. ", error.request);
+            throw { message: `Failed to ${type} habit` }
+        }
+        else {
+            console.error('An unknown error occurred:', err);
+            throw { message: "An unknown error occurred" }
+        }
+    }
+}
 // get user habits from server
 export const getHabits = async (token: string) => {
     try {
@@ -17,9 +39,8 @@ export const getHabits = async (token: string) => {
             });
         return res.data
 
-    } catch (error: any) {
-
-        throw new Error(error.response?.data?.message || "Failed to fetch habits");
+    } catch (err) {
+        handlingErrors(err, "get")
     }
 
 }
@@ -33,8 +54,8 @@ export const addHabit = async (habit: IHabit, token: string) => {
             }
         })
         return res.data
-    } catch (error: any) {
-        throw new Error(error.response?.data?.message || "Failed to add habits");
+    } catch (err) {
+        handlingErrors(err, "add")
 
     }
 }
@@ -49,8 +70,8 @@ export const deleteHabit = async (_id: string, token: string) => {
                 }
             })
         return res.data
-    } catch (error: any) {
-        throw new Error(error.response?.data?.message || "Failed to delete habits");
+    } catch (err) {
+        handlingErrors(err, "delete")
 
     }
 }
@@ -59,8 +80,8 @@ export const getOneHabit = async (_id: string) => {
     try {
         const res = await axios.get(`${import.meta.env.VITE_API_URL}/myHabits/${_id}`);
         return res.data;
-    } catch (error: any) {
-        throw new Error(error.response?.data?.message || "Failed to get a habit");
+    } catch (err) {
+        handlingErrors(err, "get one")
     }
 }
 
@@ -74,7 +95,7 @@ export const updateHabit = async (_id: string, updates: Partial<IHabit>, token: 
             }
         });
         return res.data;
-    } catch (error: any) {
-        throw new Error(error.response?.data?.message || "Failed to update a habit");
+    } catch (err) {
+        handlingErrors(err, "update")
     }
 }

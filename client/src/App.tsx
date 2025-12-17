@@ -7,15 +7,18 @@ import './index.css'
 import MyHabitsView from "./views/MyHabitsView";
 import OneHabit from "./components/habits/OneHabit/OneHabit";
 import { useMessageContext } from "./context/MessageContext";
+import { useNotificationContext } from "./context/NotificationContext";
 
 function App() {
 
   const { contextHolder } = useMessageContext()
+  const { notificationContextHolder } = useNotificationContext()
   return (
     <div>
 
       <Header />
       {contextHolder}
+      {notificationContextHolder}
       <Router>
         <Routes>
           <Route path="">

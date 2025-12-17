@@ -38,10 +38,15 @@ const Login: React.FC = () => {
   const { openMessage } = useMessageContext()
 
 
-  const sendUserData = (user: loginIUser | null) => {
+  const sendUserData = async (user: loginIUser | null) => {
 
     if (!user) return
-    login(user)
+    await login(user)
+    resetFields()
+    if (currentUser?.userName && currentUser.userName !== undefined) {
+      openMessage("success", `${currentUser?.userName}, you logged in successfully`)
+    }
+
   }
 
   const resetFields = () => {
@@ -70,11 +75,6 @@ const Login: React.FC = () => {
       const description = error.errors.map(err => err.msg).join("\n")
       openNotification("error", error.message, description, error.status)
       clearError()
-    }
-
-    if (currentUser?.userName) {
-      openMessage("success", `${currentUser.userName}, you logged in successfully`)
-      resetFields()
     }
   }, [currentUser, error])
 
@@ -124,7 +124,7 @@ const Login: React.FC = () => {
           >
             {
               loading ?
-                <><Spin indicator={<LoadingOutlined spin />} /></> : <>Sign In</>
+                <><Spin indicator={<LoadingOutlined spin />} /></> : <>Log In</>
             }
 
           </Button>

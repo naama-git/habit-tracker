@@ -4,7 +4,7 @@
 ------------------------------------------------------------------------------*/
 
 import React, { useRef, useEffect } from "react";
-import { Input, Divider, DatePicker, TimePicker, InputNumber, Form, type FormInstance, Button, Select, Checkbox, Row, Col } from "antd";
+import { Input, Divider, DatePicker, TimePicker, Form, type FormInstance, Button, Select, Checkbox, Row, Col, Spin } from "antd";
 // import { useHabitStore } from "../../../store/HabitStore";
 import AddHabit_SelectTag from "../AddHabitsComps/AddHabit_SelectTag";
 import styles from './UpdateHabit.module.css'
@@ -14,10 +14,11 @@ const { TextArea } = Input;
 interface UpdateHabitProps {
     form: FormInstance
     initialValues: Object
+    loading: boolean,
     onFinish: (values: IHabit) => void
 }
 
-const UpdateHabitView: React.FC<UpdateHabitProps> = ({ form, initialValues, onFinish }) => {
+const UpdateHabitView: React.FC<UpdateHabitProps> = ({ form, initialValues, onFinish, loading }) => {
 
     const dateFormat = "YYYY-MM-DD";
     const timeFormat = "HH:mm";
@@ -33,7 +34,6 @@ const UpdateHabitView: React.FC<UpdateHabitProps> = ({ form, initialValues, onFi
     const inputRef = useRef(null);
 
     useEffect(() => {
-
         if (inputRef.current) {
             inputRef.current.focus();
         }
@@ -217,7 +217,7 @@ const UpdateHabitView: React.FC<UpdateHabitProps> = ({ form, initialValues, onFi
             <Form.Item>
                 <Button
                     htmlType="submit"
-                    className={styles['save-button']}>Save</Button>
+                    className={styles['save-button']}>{loading ? <Spin /> : <>Save</>}</Button>
             </Form.Item>
         </Form>
 

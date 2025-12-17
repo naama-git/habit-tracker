@@ -12,7 +12,7 @@ interface UserState {
 
     signUp: (user: IUser) => Promise<void>;
     login: (user: IUser) => Promise<void>;
-    clearError:()=>void;
+    clearError: () => void;
 }
 
 export const useUserStore = create<UserState>((set) => ({
@@ -22,7 +22,7 @@ export const useUserStore = create<UserState>((set) => ({
     token: "",
 
     signUp: async (user: IUser) => {
-        set({ loading: true, error: { message: null, status: null } });
+        set({ loading: true, error: { message: null, status: null, errors: [] } });
         try {
             const data = await signUp(user);
             set({ currentUser: data });
@@ -37,14 +37,14 @@ export const useUserStore = create<UserState>((set) => ({
                 }
             }
         }
-        finally{
-            set({loading:false})
+        finally {
+            set({ loading: false })
         }
     },
 
     login: async (user: IUser) => {
 
-        set({ loading: true, error: { message: null, status: null } });
+        set({ loading: true, error: { message: null, status: null, errors: [] } });
         try {
             const { accessToken } = await login(user);
             set({ token: accessToken });
@@ -60,11 +60,11 @@ export const useUserStore = create<UserState>((set) => ({
                 }
             }
         }
-        finally{
-            set({loading:false})
+        finally {
+            set({ loading: false })
         }
     },
     clearError: () => {
-        set({error:{ message: null, status: null, errors: [] }})
+        set({ error: { message: null, status: null, errors: [] } })
     }
 }))
