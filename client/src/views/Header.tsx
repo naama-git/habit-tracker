@@ -82,7 +82,7 @@ const Header: React.FC = () => {
           >
 
             <Menu mode="vertical" items={menuItems}
-              style={{ height: "40%", display: "flex", flexDirection: "column", justifyContent: "center", fontFamily: 'AlfaSlabOne' }} />
+              style={{ height: "40%", display: "flex", flexDirection: "column", justifyContent: "center" }} />
             <Divider style={{ borderColor: "#320988", }} />
           </Drawer>
         </>

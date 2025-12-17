@@ -50,8 +50,8 @@ const DeleteHabit: React.FC<DeleteHabitProps> = ({ _id }) => {
         <div>
 
             <Popconfirm
-                title="Delete the task"
-                description="Are you sure you want to delete this task?"
+                title="Delete the habit"
+                description="Are you sure you want to delete this habit?"
                 onConfirm={confirm}
                 okText="Yes"
                 cancelText="No">
