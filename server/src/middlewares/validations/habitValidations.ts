@@ -1,5 +1,7 @@
 import { body, validationResult } from 'express-validator';
 import { Request, Response, NextFunction } from 'express'
+import logger from '../../config/logger';
+import { ErrorApp } from '../../Interfaces/ErrorApp';
 
 // validation for creating a habit
 export const habitValidation = [
@@ -146,25 +148,20 @@ export const partialHabitVaildation = [
     .custom((newStartDate, { req }) => {
       if (!newStartDate) return true
       const dateValue = new Date(newStartDate)
-      
+
       // let today = new Date()
       // today.setHours(0, 0, 0, 0)
       // if (dateValue >= today) {
-        const currentHabit = req.currentHabit;
-        let relevantEndDate = req.body.endDate;
-        if (!relevantEndDate) {//if the user didnt update the end date
-          if (currentHabit && currentHabit.endDate) {//if there is end date in current habit
-            relevantEndDate = currentHabit.endDate;
-          }
+      const currentHabit = req.currentHabit;
+      let relevantEndDate = req.body.endDate;
+      if (!relevantEndDate) {//if the user didnt update the end date
+        if (currentHabit && currentHabit.endDate) {//if there is end date in current habit
+          relevantEndDate = currentHabit.endDate;
         }
-        if (dateValue.getTime() >= relevantEndDate.getTime()) {
-          throw new Error('Start date must be before end date (Current End Date: ' + relevantEndDate.toISOString().split('T')[0] + ')');
-        }
-
-      // }
-      // else {
-      //   throw new Error('Start date must at least today');
-      // }
+      }
+      if (dateValue.getTime() >= relevantEndDate.getTime()) {
+        throw new Error('Start date must be before end date (Current End Date: ' + relevantEndDate.toISOString().split('T')[0] + ')');
+      }
       return true;
     }),
 
@@ -186,12 +183,12 @@ export const partialHabitVaildation = [
     }),
 ]
 
-
-
 export const validateRequest = (req: Request, res: Response, next: NextFunction) => {
-  const errors = validationResult(req);
+ const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
+    const errorsArr = errors.array()
+    const reason = errorsArr.map(error => error.msg).join(' ')
+    throw new ErrorApp(400, 'Habit validation failed', 'validateRequest', req.method as any, reason, req.originalUrl,errorsArr)
   }
   next();
 };

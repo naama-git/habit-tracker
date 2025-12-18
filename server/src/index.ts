@@ -19,7 +19,6 @@ app.use(morganMiddleware)
 
 connectDB();
 
-
 app.get('/', (req: Request, res: Response) => {
     res.send("Home Page")
 })
@@ -28,10 +27,10 @@ import userRouter from './routes/userRoute';
 app.use('/user', userRouter);
 
 import habitRouter from './routes/habitRoute'
-
-
+import { errorHandler } from './middlewares/errorHandling';
 app.use('/myHabits', habitRouter)
 
+app.use(errorHandler)
 
 mongoose.connection.once('open', () => {
     console.log('Connected to MongoDB')

@@ -1,6 +1,8 @@
 import jwt from 'jsonwebtoken'
 import { Request, Response, NextFunction } from 'express'
 import User from '../models/User';
+import logger from '../config/logger';
+import { ErrorApp } from '../Interfaces/ErrorApp';
 
 
 
@@ -9,29 +11,29 @@ const verifyJWT = async (req: Request, res: Response, next: NextFunction) => {
     //check for token in headers
     const authHeader = req.headers.authorization || req.headers.Authorization
     if (!authHeader || !authHeader.toString().startsWith('Bearer ')) {
-        return res.status(401).json({ message: 'Invalid1' })
+        throw new ErrorApp(401, "Invalid User", "verifyJWT", req.method as any, "Authorization header is missing or invalid", req.originalUrl)
     }
 
     const token = authHeader.toString().split(' ')[1]
     if (!token || token == null) {
-        return res.status(401).json({ message: 'Invalid2' })
+        throw new ErrorApp(401, "Invalid User", "verifyJWT", req.method as any, "Token is missing", req.originalUrl)
     }
+
 
     const secret = process.env.ACCESS_TOKEN_SECRET
     if (!secret) {
-        return res.status(500).json({ message: 'ACCESS_TOKEN_SECRET not configured' })
+        throw new ErrorApp(500, "Internal Server Error", "verifyJWT", req.method as any, "ACCESS_TOKEN_SECRET was not configured", req.originalUrl)
     }
 
+
     const payload = jwt.verify(token, secret) as jwt.JwtPayload;
-    // if(!payload) return res.status(401).json({massage:'Please Log In First'})
 
     const user = await User.findOne({ userName: payload.userName });
     if (!user) {
-        return res.status(401).json({ message: 'Invalid3' })
+        throw new ErrorApp(401, "Invalid User", "verifyJWT", req.method as any, "User does not exist", req.originalUrl)
+
     }
-    // console.log(user);
     req.user = user;
-    //  console.log(req.user);
 
     next()
 

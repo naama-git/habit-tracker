@@ -17,10 +17,14 @@ export const morganMiddleware = morgan((tokens: TokenIndexer<IncomingMessage, Se
     {
         stream: {
             write: (message) => {
+
                 const parts = message.trim().split(' ');
                 const status = parseInt(parts[2] ?? "0");
-                if (status >= 400) {
+                if (status >= 500) {
                     logger.error(message.trim())
+                }
+                else if (status >= 400 && status < 500){
+                    logger.warn(message.trim())
                 }
                 else {
                     logger.info(message.trim())

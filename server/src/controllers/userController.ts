@@ -5,6 +5,7 @@ import User from "../models/User";
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken'
 import { log } from "node:console";
+import { ErrorApp } from "../Interfaces/ErrorApp";
 
 
 const signin = async (req: Request, res: Response) => {
@@ -15,7 +16,7 @@ const signin = async (req: Request, res: Response) => {
 
     const createdUser = await User.create({ userName, email, password: hashedPwd })
     if (!createdUser) {
-        return res.status(500).json({ message: "Could not create user" })
+        throw new ErrorApp(500, "Internal server error", "signin", req.method as any, "Failed to create user", req.originalUrl)
     }
     return res.status(201).json({ message: "User created successfully", user: createdUser })
 }
@@ -25,32 +26,30 @@ const signin = async (req: Request, res: Response) => {
 const login = async (req: Request, res: Response) => {
     const { userName, password } = req.body
 
-    //validate input
-    if (!userName || !password) {
-        return res.status(401).json({ message: "UserName and password are required fields" })
-    }
-
     const user = await User.findOne({ userName }).lean()
     if (!user) {
-        return res.status(404).json({ message: "Invalid user1" })
+        throw new ErrorApp(401, "Invalid User", "login", req.method as any, "userName was not found in DB", req.originalUrl)
     }
     const match = await bcrypt.compare(password, user.password)
-    
+
     if (!match) {
-        return res.status(401).json({ message: "Invalid user" })
+        throw new ErrorApp(401, "Invalid User", "login", req.method as any, "password is incorrect", req.originalUrl)
     }
 
     const secret = process.env.ACCESS_TOKEN_SECRET
     if (!secret) {
-        return res.status(500).json({ message: 'ACCESS_TOKEN_SECRET not configured' })
+        throw new ErrorApp(500, "Internal server error", "login", req.method as any, "ACCESS_TOKEN_SECRET not configured", req.originalUrl)
+
     }
     const userInfo = {
         userName: user.userName,
         password: user.password
     }
-    console.log(userInfo);
 
     const accessToken = jwt.sign(userInfo, secret)
+    if (!accessToken) {
+        throw new ErrorApp(500, "Internal server error", "login", req.method as any, "Failed to create access token", req.originalUrl)
+    }
     return res.status(200).json({ accessToken })
 
 }

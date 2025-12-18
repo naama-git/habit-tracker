@@ -5,22 +5,19 @@ import Habit from '../models/Habit'
 import HabitLog from '../models/HabitLog'
 import { IHabit } from '../Interfaces/HabitType'
 import { IUser } from "../Interfaces/UserType";
-
+import { ErrorApp } from "../Interfaces/ErrorApp";
 
 
 //get all habits
 const getHabits = async (req: Request, res: Response) => {
 
     const user: IUser | undefined = req.user
-    if (!user||user===undefined) {
-        return res.status(401).json({ message: 'Unauthorized' })
+    if (!user || user === undefined) {
+        throw new ErrorApp(401, "Unauthorized", "getHabits", req.method as any, "req.user is empty", req.originalUrl)
     }
+
     let habits: IHabit[] = []
     habits = await Habit.find({ userId: user._id }).lean() as unknown as IHabit[];
-
-    // if (!habits || habits.length === 0) {
-    //     return res.status(404).json({ message: "No habits found", habits: [] })
-    // }
     return res.status(200).json(habits)
 }
 
@@ -29,17 +26,17 @@ const getHabitById = async (req: Request, res: Response) => {
     const { id } = req.params
     const habit = await Habit.findById(id).lean()
     if (!habit) {
-        return res.status(404).json({ message: "Habit not found" })
+        throw new ErrorApp(404, "Habit not found", "getHabitById", req.method as any, "Habit Id was not found", req.originalUrl)
     }
-    res.json(habit)
+    res.status(200).json(habit)
 }
 
 //create a new habit
 const createHabit = async (req: Request, res: Response) => {
     const user: IUser | undefined = req.user
 
-    if (!user||user===undefined) {
-        return res.status(401).json({ message: 'Unauthorized' })
+    if (!user || user === undefined) {
+        throw new ErrorApp(401, "Unauthorized", "createHabits", req.method as any, "req.user is empty", req.originalUrl)
     }
     const { habitName, description, tag, frequency, daysInMonth, daysInWeek, startDate, endDate, time } = req.body
 
@@ -48,13 +45,13 @@ const createHabit = async (req: Request, res: Response) => {
         sendStartDate = new Date();
     }
     if (endDate !== undefined && new Date(endDate) < new Date(sendStartDate)) {
-        return res.status(400).json({ message: "End date must be after start date" })
+        throw new ErrorApp(400, "End date must be greater than start date", "getHabits", req.method as any, "End date must be greater than start date", req.originalUrl)
     }
 
 
     let habit = {}
     if (frequency === "monthly") {
-        habit  = await Habit.create({ habitName, description, tag, frequency: frequency.toLowerCase(), daysInMonth, startDate: sendStartDate, endDate, time, userId: user._id }) 
+        habit = await Habit.create({ habitName, description, tag, frequency: frequency.toLowerCase(), daysInMonth, startDate: sendStartDate, endDate, time, userId: user._id })
     }
     else if (frequency === "weekly") {
         habit = await Habit.create({ habitName, description, tag, frequency: frequency.toLowerCase(), daysInWeek, startDate: sendStartDate, endDate, time, userId: user._id })
@@ -64,7 +61,8 @@ const createHabit = async (req: Request, res: Response) => {
         habit = await Habit.create({ habitName, description, tag, frequency: frequency.toLowerCase(), startDate: sendStartDate, endDate, time, userId: user._id })
     }
     if (!habit) {
-        return res.status(500).json({ message: "Failed to create habit" })
+        throw new ErrorApp(500, "Internal server error", "createHabit", req.method as any, "Failed to create habit", req.originalUrl)
+
     }
     return res.status(201).json(habit)
 }
@@ -74,13 +72,13 @@ const deleteHabit = async (req: Request, res: Response) => {
     const { id } = req.params
     const habit = await Habit.findByIdAndDelete(id)
     if (!habit) {
-        return res.status(404).json({ message: "Habit not found" })
+        throw new ErrorApp(404, "Habit not found", "getHabitById", req.method as any, "Habit Id was not found", req.originalUrl)
     }
 
     const deletedHabit = await habit.deleteOne()
 
     if (!deletedHabit) {
-        return res.status(500).json({ message: "Failed to delete habit" })
+        throw new ErrorApp(500, "Internal server error", "deleteHabit", req.method as any, "Failed to delete habit", req.originalUrl)
     }
 
     return res.status(204).json({ message: "Habit deleted successfully" })
@@ -93,7 +91,9 @@ const updateHabit = async (req: Request, res: Response) => {
 
     const habit = await Habit.findById(id).exec()
     if (!habit) {
-        return res.status(404).json({ message: "Habit not found" })
+        throw new ErrorApp(404, "Habit not found", "getHabitById", req.method as any, "Habit Id was not found", req.originalUrl)
+
+
     }
 
     //update fields
@@ -111,7 +111,8 @@ const updateHabit = async (req: Request, res: Response) => {
     habit.time = time
     const updatedHabit = await habit.save()
     if (!updateHabit) {
-        return res.status(500).json({ message: "Failed to update habit" })
+        throw new ErrorApp(500, "Internal server error", "updateHabit", req.method as any, "Failed to update habit", req.originalUrl)
+
     }
     return res.status(200).json(updatedHabit)
 }
@@ -129,12 +130,12 @@ const updatePartialHabit = async (req: Request, res: Response) => {
     );
 
     if (Object.keys(filterObject).length === 0) {
-        return res.status(400).send({ message: "Body cannot be empty or contain only undefined values." });
+        throw new ErrorApp(400, "Body cannot be empty or contain only undefined values", "updatePartialHabit", req.method as any, "Body cannot be empty or contain only undefined values", req.originalUrl)
     }
 
     const habit = await Habit.findById(_id).exec()
     if (!habit) {
-        return res.status(404).json({ message: "Habit not found" })
+        throw new ErrorApp(404, "Habit not found", "getHabitById", req.method as any, "Habit Id was not found", req.originalUrl)
     }
 
     //update fields
@@ -144,7 +145,7 @@ const updatePartialHabit = async (req: Request, res: Response) => {
 
     const updatedHabit = await habit.save()
     if (!updatedHabit) {
-        return res.status(500).json({ message: "Failed to update habit" })
+       throw new ErrorApp(500, "Internal server error", "updatePartialHabit", req.method as any, "Failed to patch habit", req.originalUrl)
     }
     return res.status(200).json(updatedHabit)
 
@@ -155,12 +156,10 @@ const updatePartialHabit = async (req: Request, res: Response) => {
 const habitDone = async (req: Request, res: Response) => {
     const { _id } = req.params
     const { logDate, done } = req.body
-    if (!_id || !logDate) {
-        return res.status(400).json({ message: "HabitId and logDate are required" })
-    }
-    const habitLog = await HabitLog.create({habitId:_id, logDate, done })
+
+    const habitLog = await HabitLog.create({ habitId: _id, logDate, done })
     if (!habitLog) {
-        return res.status(500).json({ message: "Failed to log habit" })
+        throw new ErrorApp(500, "Internal server error", "habitDone", req.method as any, "Failed to track habit", req.originalUrl)
     }
     return res.status(201).json(habitLog)
 }
