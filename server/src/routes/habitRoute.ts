@@ -13,7 +13,6 @@ router.post('/', verifyJWT, habitValidation, validateRequest, habitController.cr
 router.delete('/:id', verifyJWT, habitController.deleteHabit)
 router.patch('/:_id', verifyJWT, loadHabit, partialHabitVaildation, validateRequest, habitController.updatePartialHabit)
 
-router.post('/:_id', verifyJWT, loadHabit, trackHabitValidation, habitController.habitDone)
 
 
 export default router

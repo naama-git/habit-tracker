@@ -2,7 +2,7 @@
 
 import { Request, Response } from "express";
 import Habit from '../models/Habit'
-import HabitLog from '../models/HabitLog'
+
 import { IHabit } from '../Interfaces/HabitType'
 import { IUser } from "../Interfaces/UserType";
 import { ErrorApp } from "../Interfaces/ErrorApp";
@@ -152,16 +152,6 @@ const updatePartialHabit = async (req: Request, res: Response) => {
 }
 
 
-//mark habit as done
-const habitDone = async (req: Request, res: Response) => {
-    const { _id } = req.params
-    const { logDate, done } = req.body
 
-    const habitLog = await HabitLog.create({ habitId: _id, logDate, done })
-    if (!habitLog) {
-        throw new ErrorApp(500, "Internal server error", "habitDone", req.method as any, "Failed to track habit", req.originalUrl)
-    }
-    return res.status(201).json(habitLog)
-}
-export default { getHabits, getHabitById, createHabit, deleteHabit, updateHabit, habitDone, updatePartialHabit }
+export default { getHabits, getHabitById, createHabit, deleteHabit, updateHabit, updatePartialHabit }
 

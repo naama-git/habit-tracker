@@ -28,5 +28,5 @@ export const errorHandler = (err: ErrorApp, req: Request, res: Response, next: N
             });
     }
 
-    res.status(statusCode).json({ message: err.message || "Internal Server Error", data: err.data });
+    return res.status(statusCode).json({ message: err.message || "Internal Server Error", data: err.data });
 };

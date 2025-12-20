@@ -9,6 +9,8 @@ import { ErrorApp } from '../../Interfaces/ErrorApp';
     if (!currentHabit) {
         throw new ErrorApp (404, "Page not found", "loadHabit", req.method as any ,"Habit not found")
     }
+    // console.log(currentHabit);
+    
     req.currentHabit = currentHabit;
     next();
 

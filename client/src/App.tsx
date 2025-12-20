@@ -8,6 +8,7 @@ import MyHabitsView from "./views/MyHabitsView";
 import OneHabit from "./components/habits/OneHabit/OneHabit";
 import { useMessageContext } from "./context/MessageContext";
 import { useNotificationContext } from "./context/NotificationContext";
+import HabitView from "./views/HabitView";
 
 function App() {
 
@@ -24,7 +25,7 @@ function App() {
           <Route path="">
             <Route path="/" element={<HomePage />} />
             <Route path="/myHabits" element={<MyHabitsView />} />
-            <Route path="/myHabits/:_id" element={<OneHabit />} />
+            <Route path="/myHabits/:_id" element={<HabitView />} />
           </Route>
         </Routes>
       </Router>

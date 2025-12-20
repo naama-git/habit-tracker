@@ -1,15 +1,15 @@
 import { body, validationResult } from 'express-validator';
 import { Request, Response, NextFunction } from 'express'
-import User from '../../models/HabitLog';
 import { ErrorApp } from '../../Interfaces/ErrorApp';
-
 
 export const trackHabitValidation = [
     body('logDate').notEmpty().isISO8601().withMessage('log Date is required').toDate(),
-    body('done').notEmpty().withMessage('Is Habit Done is required'),
+    body('done').notEmpty().withMessage('Habit Done is required'),
     body('logDate').custom((value, { req }) => {
-        if (req.req.currentHabit.endDate) {
-            if (value > req.req.currentHabit.endDate || value < req.currentHabit.startDate) {
+        console.log("startDate:", req.currentHabit.startDate, "value", value)
+        console.log(typeof req.currentHabit.startDate, typeof value)
+        if (req.currentHabit.startDate) {
+            if (value > req.currentHabit.endDate || value < req.currentHabit.startDate) {
                 throw new Error('Log date is outside the valid range for this habit.');
             }
         }
@@ -18,10 +18,15 @@ export const trackHabitValidation = [
                 throw new Error(" Users can only mark a task as 'Completed' on or after its scheduled start date.");
             }
         }
+        return true
     })
 
 
 ];
+export const trackHabitValidationForUpdating = [
+    body('done').notEmpty().withMessage("done is required")
+]
+
 
 export const validateRequest = (req: Request, res: Response, next: NextFunction) => {
     const errors = validationResult(req);

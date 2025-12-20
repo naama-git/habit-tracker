@@ -27,9 +27,12 @@ import userRouter from './routes/userRoute';
 app.use('/user', userRouter);
 
 import habitRouter from './routes/habitRoute'
-import { errorHandler } from './middlewares/errorHandling';
 app.use('/myHabits', habitRouter)
 
+import trackHabitRouter from './routes/trackHabitRoute'
+app.use('/trackHabit', trackHabitRouter)
+
+import { errorHandler } from './middlewares/errorHandling';
 app.use(errorHandler)
 
 mongoose.connection.once('open', () => {
