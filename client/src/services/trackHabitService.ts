@@ -28,7 +28,33 @@ const handlingErrors = (err: any, message: string) => {
 
 export const trackHabit = async (_id: string, token: string, done: boolean, logDate: Date) => {
     try {
-        const res = await axios.post(`${import.meta.env.VITE_API_URL}/myHabits/${_id}`,{done,logDate}, {
+        const res = await axios.post(`${import.meta.env.VITE_API_URL}/trackHabit/${_id}`, { done, logDate }, {
+            headers: {
+                Authorization: "Bearer " + token
+            }
+        })
+        return res.data
+    } catch (error) {
+        handlingErrors(error, "failed to track habit")
+    }
+}
+
+export const getHabitTrack = async (_id: string, token: string) => {
+    try {
+        const res = await axios.post(`${import.meta.env.VITE_API_URL}/trackHabit/${_id}`, {
+            headers: {
+                Authorization: "Bearer " + token
+            }
+        })
+        return res.data
+    } catch (error) {
+        handlingErrors(error, "failed to track habit")
+    }
+}
+
+export const updateHabitTrack = async (_id: string, token: string, done: boolean) => {
+    try {
+        const res = await axios.post(`${import.meta.env.VITE_API_URL}/trackHabit/${_id}`, { done }, {
             headers: {
                 Authorization: "Bearer " + token
             }
