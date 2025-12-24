@@ -3,20 +3,6 @@ import HabitLog from '../models/HabitLog'
 import { Request, Response } from "express";
 
 
-//mark habit as done
-export const trackHabit = async (req: Request, res: Response) => {
-    const { _id } = req.params
-    const { logDate, done } = req.body
-    const isExist = await HabitLog.findOne({ logDate })
-    if (isExist) {
-        return res.status(201).json({ habitId: isExist.habitId, logDate: isExist.logDate, done: isExist.done })
-    }
-    const habitLog = await HabitLog.create({ habitId: _id, logDate, done })
-    if (!habitLog) {
-        throw new ErrorApp(500, "Internal server error", "habitDone", req.method as any, "Failed to track habit", req.originalUrl)
-    }
-    return res.status(201).json({ habitId: habitLog.habitId, logDate: habitLog.logDate, done: habitLog.done })
-}
 
 //get habit logs
 export const getHabitTrackers = async (req: Request, res: Response) => {
@@ -25,29 +11,31 @@ export const getHabitTrackers = async (req: Request, res: Response) => {
     if (!logs || logs === undefined) {
         throw new ErrorApp(404, "Couldn't find valid habit trackers", "updateHabitStatus", req.method as any, "no havit trackers was found", req.originalUrl)
     }
-    return res.status(200).json({ habitTrackers: logs })
+    return res.status(200).json({ data: logs })
 }
 
 
 //update habit status
-export const updateHabitStatus = async (req: Request, res: Response) => {
-    const { _id } = req.params
-    const { done } = req.body
-    const tracker = await HabitLog.findOne({ habitId: _id }).exec()
+export const upsertHabitStatus = async (req: Request, res: Response) => {
+    const { _id } = req.params;
+    const { done, logDate } = req.body;
 
-    if (!tracker) {
-        throw new ErrorApp(404, "Couldn't find valid habit trackers", "updateHabitStatus", req.method as any, "no havit tracker was found", req.originalUrl)
-    }
-    tracker.done = done
-    tracker.logDate = tracker.logDate
-    tracker.habitId = tracker._id
-    const updatedHabitLog = await tracker.save()
-    if (!updatedHabitLog) {
-        throw new ErrorApp(500, "Internal Server Error", "updateHabitStatus", req.method as any, "could't update habit", req.originalUrl)
-    }
+    try {
+        const tracker = await HabitLog.findOneAndUpdate(
+            { logDate },
+            { done, logDate, habitId: _id },
+            {
+                new: true,
+                upsert: true,
+                runValidators: true
+            }
+        ).exec();
 
-    return res.status(200).json(updatedHabitLog)
+        return res.status(200).json(tracker);
+
+    } catch (error) {
+        throw new ErrorApp(500, "Internal Server Error", "upsertHabitStatus", req.method as any, "Failed to upsert habit status", req.originalUrl);
+    }
 }
-
 
 

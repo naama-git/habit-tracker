@@ -1,0 +1,98 @@
+.container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    /* 
+     padding-left: 15px;
+        padding-right: 15px;
+        border-right: 1px black solid; */
+
+}
+
+.card-wrapper {
+    width: 100%;
+    max-width: 500px;
+    margin-top: 50px;
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+
+    /* border-left: 1px black solid; */
+}
+
+.habit-card {
+    width: 100%;
+    max-width: 420px;
+    background: #ffffff;
+    border-radius: 18px;
+    border: 1px black solid;
+    padding: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.in {
+    display: flex;
+    flex-direction: column;
+    /* justify-content: center;
+    align-items: center; */
+
+}
+
+.habit-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.12);
+}
+
+
+
+
+.h1 {
+    font-size: 40px;
+    font-weight: bold;
+    padding: 0;
+    text-align: center;
+    margin: 0;
+
+}
+
+
+.habit-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    font-size: 0.9rem;
+}
+
+
+
+.some-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+    flex-direction: column;
+    margin-bottom: 10px;
+    font-size: 0.9rem;
+    gap: 5px;
+}
+
+
+
+@media (max-width: 480px) {
+    .habit-card {
+        padding: 16px;
+    }
+
+    .habit-title {
+        font-size: 1.35rem;
+    }
+
+    .habit-tag {
+        font-size: 0.7rem;
+        padding: 3px 8px;
+    }
+}

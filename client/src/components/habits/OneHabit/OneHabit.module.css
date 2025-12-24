@@ -10,17 +10,20 @@
     width: 100%;
     max-width: 500px;
     margin-top: 50px;
-    background: white;
-    border-left: 1px #555 solid;
-    border-right: 1px #555 solid;
+    background-color: white;
+   
     display: flex;
     align-items: center;
     justify-content: center;
+    padding-left: 15px;
+    padding-right: 15px;
+    /* border-right: 1px black solid; */
+    /* border-left: 1px black solid; */
 }
 
 .habit-card {
-    width: 100%;
-    max-width: 420px;
+    width: 420px;
+    max-width: 90vw;
     background: #ffffff;
     border-radius: 18px;
     border: 1px black solid;
@@ -172,86 +175,3 @@
     }
 }
 
-
-/* --- תוספות עבור מצב עריכה (UpdateHabit) --- */
-
-/* התאמת כותרת שהיא Input */
-/* .habit-title-input {
-    font-size: 1.1rem !important; 
-    font-weight: bold !important;
-    margin-bottom: 10px;
-    padding: 0 !important; 
-    width: 90%;
-} */
-/* 
-.habit-title-input:focus,
-.habit-description-input:focus {
-    box-shadow: none !important;
-    background-color: #fcfcfc;
-   
-}
-
-
-.habit-description-input {
-    font-size: 0.95rem !important;
-    color: #555;
-    margin-bottom: 16px;
-    padding: 0 !important;
-    resize: none;
-}
-
-.edit-row .ant-picker,
-.edit-row .ant-input-number {
-    padding: 0 !important;
-    box-shadow: none !important;
-}
-
-.edit-row .ant-picker-input>input,
-.edit-row .ant-input-number-input {
-    font-weight: bold;
-    text-align: right;
-   
-    color: #320988;
-  
-}
-
-.editing-mode {
-    border: 1px dashed #320988;
-
-}
-
-
-
-.habit-title-input {
-    font-size: 38px !important;
-    
-    font-weight: 600 !important;
-    
-    line-height: 1.23 !important;
- 
-    text-align: center !important;
-    
-    color: rgba(0, 0, 0, 0.88) !important;
-   
-
-    margin-bottom: 0.5em;
-   
-    padding: 0 !important;
-
-    background: transparent !important;
-
-    height: auto !important;
-
-}
-
-
-.habit-title-input::placeholder {
-    color: #bfbfbf;
-    font-weight: 400;
-    font-size: 38px;
-}
-
-
-.habit-title-input:focus {
-    box-shadow: none !important;
-} */

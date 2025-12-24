@@ -6,6 +6,7 @@ import TrackHabit from '../components/habits/TrackHabitsComps/TrackHabit'
 const HabitView = () => {
   return (
     <div className={styles["content"]}>
+      
       <OneHabit/>
       <TrackHabit/>
     </div>
